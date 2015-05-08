@@ -1,0 +1,13 @@
+{
+	"eaglePrice": 2,
+	"tournamentCode": "014",
+	"groups": [
+		[ "25804" , "25632", "34046", "28237", "21528" ],
+		[ "23108" , "28089", "24502", "27141", "30925" ],
+		[ "20396" , "21209", "32102", "34360", "01810" ],
+		[ "22405" , "27649", "29420", "10809", "33141" ]
+	],
+	"users": [
+		"Connor Garrison","Michael Shelton","Thomas Grantham","Marshall Martin","Tony Pauling"
+	] 
+}
