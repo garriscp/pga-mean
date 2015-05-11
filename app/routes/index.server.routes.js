@@ -3,7 +3,6 @@ module.exports = function(app) {
     var Player = require('../models/player.js');
 
     app.use(function(req,res,next){
-        console.log("something is happening");
         next();
     });
 
@@ -32,4 +31,10 @@ module.exports = function(app) {
             }
         });
     });
+
+
+
+    app.route('/test')
+
+        .get(index.render);
 };
