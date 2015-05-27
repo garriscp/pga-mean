@@ -9,6 +9,8 @@ exports.render = function(req,res) {
     function getAllScores(tournament) {
         var flights = getFlightsFromTeams(tournament.teams);
         var promises = [];
+        var tournamentPromise = tournamentCardPromise("http://www.pgatour.com/data/r/" + tournament.tournamentCode + "/leaderboard-v2.json");
+        promises.push(tournamentPromise);
         for (var a = 0; a < flights.length; a++) {
             var promise = getFlightScores(flights[a]);
             promises.push(promise);
@@ -38,6 +40,19 @@ exports.render = function(req,res) {
             })
         }
         return data;
+    }
+
+    function tournamentCardPromise(url) {
+        var deferred = Q.defer();
+        request(url, function (error, response, body) {
+            if (!error) {
+                var scorecard = JSON.parse(body);
+                deferred.resolve(scorecard);
+            } else {
+                deferred.reject(error);
+            }
+        });
+        return deferred.promise;
     }
 
     function requestp(url) {
@@ -99,21 +114,56 @@ exports.render = function(req,res) {
                 playerPair.money = (totalMoney / flight.length);
             });
         });
-        return _und.sortBy(_und.flatten(_und.values(sortedFlights)), "finalScore");
+        return _und.sortBy(_und.flatten(_und.values(sortedFlights)), "numericPosition");
+    }
+
+    function getNumericPosition(position,score) {
+        var numericPosition = 0;
+        score = Number(score);
+        //if CUT - give position of 9999 + final score so that we rank correctly
+        //assuming one cut per tournament
+        if (position === "CUT") {
+            numericPosition = 1000 + score;
+        } else {
+            //remove T if there for tie, then turn into number
+            numericPosition = Number(position.replace("T",""));
+        }
+        return numericPosition;
     }
 
     getAllScores(tournamentJSON).then(function(groupsAndScores){
+        //cut the leaderboard object out of the array to be sent to FE
+        var leaderboard = groupsAndScores.splice(0,1);
         var sortedFlights = [];
         for (var i = 0; i < groupsAndScores.length; i++) {
             for (var n = 0; n < groupsAndScores[i].length; n++) {
                 groupsAndScores[i][n].finalScore = parseInt(groupsAndScores[i][n].finalScore);
                 groupsAndScores[i][n].userId = tournamentJSON.teams[n].user_id;
+
+
+                //add some stuff from the leaderboard json
+                for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
+                    if (groupsAndScores[i][n].id == leaderboard[0].leaderboard.players[k].player_id) {
+                        groupsAndScores[i][n].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
+                        groupsAndScores[i][n].numericPosition = getNumericPosition(groupsAndScores[i][n].position,groupsAndScores[i][n].finalScore);
+                    }
+                }
             }
-            sortedFlights[i] = _und.sortBy( groupsAndScores[i], "finalScore");
-            for (var k = 0; k < sortedFlights[i].length; k++) {
-                sortedFlights[i][k].money = tournamentJSON.flightPayouts[k];
+            if (i !== groupsAndScores.length -1) {
+                sortedFlights[i] = _und.sortBy( groupsAndScores[i], "numericPosition");
+            } else {
+                //reverse order if we are the last group - assuming antis
+                sortedFlights[i] = _und.sortBy( groupsAndScores[i], "numericPosition").reverse();
             }
-            sortedFlights[i] = adjustForTies(_und.groupBy(sortedFlights[i],"finalScore"));
+
+            for (var a = 0; a < sortedFlights[i].length; a++) {
+                sortedFlights[i][a].money = tournamentJSON.flightPayouts[a];
+            }
+            sortedFlights[i] = adjustForTies(_und.groupBy(sortedFlights[i],"numericPosition"));
+            if (i === groupsAndScores.length -1) {
+                //reverse order if we are the last group - assuming antis
+                sortedFlights[i] = sortedFlights[i].reverse();
+            }
         }
         res.json(sortedFlights);
     });

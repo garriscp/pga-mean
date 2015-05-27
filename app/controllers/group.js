@@ -1,6 +1,7 @@
 exports.render = function(req, res) {
 
     var Player = require('../models/player.js');
+    var User = require('../models/user.js');
 
     var tournamentJSON = require("../models/currentTournament.json"),
         Q = require("q"),
@@ -165,6 +166,10 @@ exports.render = function(req, res) {
         return Player.findOne({"id":id}).exec();
     }
 
+    function getUserFromId(id) {
+        return User.findOne({"id":id}).exec();
+    }
+
     function getMoneyEarned(player) {
         //any final place trash?
         var money = 0;
@@ -210,6 +215,8 @@ exports.render = function(req, res) {
                         groupsAndScores[i][j].money = getMoneyEarned(groupsAndScores[i][j]);
                     }
                 }
+                //inverse money for antis
+                if (j === groupsAndScores[i].length - 1) groupsAndScores[i][j].money *= -1;
             }
         }
         res.json(groupsAndScores);

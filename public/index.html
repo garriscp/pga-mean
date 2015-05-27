@@ -50,12 +50,14 @@
     </table>
 
     <table class="table table-bordered table-condensed" ng-repeat="flight in sortedFlights">
-        <caption>Flight {{$index}}</caption>
+        <caption ng-class="{'anti': $last}">Flight {{$index}}</caption>
         <thead>
         <tr>
             <th>User</th>
             <th>Golfer</th>
             <th>Money</th>
+            <th>Position</th>
+            <th>Numeric-Position</th>
             <th>Score</th>
             <th>RD 1</th>
             <th>RD 2</th>
@@ -68,6 +70,8 @@
             <td>{{player.userId}}</td>
             <td>{{player.name}}</td>
             <td>{{player.money}}</td>
+            <td>{{player.position}}</td>
+            <td>{{player.numericPosition}}</td>
             <td>{{player.finalScore}}</td>
             <td ng-repeat="round in player.rnds">{{round.score}}</td>
         </tr>
