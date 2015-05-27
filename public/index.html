@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html ng-app="pgaMean">
+<head>
+    <script type="text/javascript" src="jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="angular/angular.min.js"></script>
+    <script type="text/javascript" src="underscore/underscore-min.js"></script>
+
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap-theme.min.css" type="text/css" />
+
+    <script type="text/javascript" src="js/app.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body ng-controller="mainController" class="pga-mean-container">
+    <table class="table table-bordered table-condensed" ng-repeat="team in teams">
+        <caption>Group {{$index}} - Total Money Earned: {{team.money}}</caption>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Golfer</th>
+                <th>Money</th>
+                <th>Position</th>
+                <th>Score</th>
+                <th>Eagles</th>
+                <th>Trash Birdies</th>
+                <th>RD 1</th>
+                <th>RD 2</th>
+                <th>RD 3</th>
+                <th>RD 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="player in team">
+                <td>{{player.userId}}</td>
+                <td>{{player.name}}</td>
+                <td>{{player.money}}</td>
+                <td>{{player.position}}</td>
+                <td>{{player.finalScore}}</td>
+                <td>{{player.eagles}}</td>
+                <td>{{player.trashBirdies}}</td>
+                <td ng-repeat="round in player.rnds" ng-class="{lowround: round.lowRound}">
+                    <div>Score: {{round.score}}</div>
+                    <div>Eagles: {{round.eagles}}</div>
+                    <div>Trash Birdies: {{round.trashBirdies}}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered table-condensed" ng-repeat="flight in sortedFlights">
+        <caption>Flight {{$index}}</caption>
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Golfer</th>
+            <th>Money</th>
+            <th>Score</th>
+            <th>RD 1</th>
+            <th>RD 2</th>
+            <th>RD 3</th>
+            <th>RD 4</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="player in flight">
+            <td>{{player.userId}}</td>
+            <td>{{player.name}}</td>
+            <td>{{player.money}}</td>
+            <td>{{player.finalScore}}</td>
+            <td ng-repeat="round in player.rnds">{{round.score}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered table-condensed">
+        <caption>Final Tally</caption>
+        <thead>
+        <tr>
+            <th>Pay Event</th>
+            <th>User 0</th>
+            <th>User 1</th>
+            <th>User 2</th>
+            <th>User 3</th>
+            <th>User 4</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Final Score + Trash</td>
+            <td players="true"></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

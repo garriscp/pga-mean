@@ -1,5 +1,6 @@
 module.exports = function(app) {
     var index = require('../controllers/index.server.controller');
+    var flight = require('../controllers/flight');
     var Player = require('../models/player.js');
 
     app.use(function(req,res,next){
@@ -37,4 +38,8 @@ module.exports = function(app) {
     app.route('/test')
 
         .get(index.render);
+
+    app.route('/flight')
+
+        .get(flight.render);
 };

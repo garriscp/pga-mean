@@ -1,6 +1,11 @@
 var port = 1337;
-var express = require('./config/express');
+var express = require('express');
 var app = express();
+app.use(express.static('public'));
+app.use(express.static('bower_components'));
+
+require('./app/routes/index.server.routes.js')(app);
+
 var bodyParser = require('body-parser');
 
 var Player = require("./app/models/player");
