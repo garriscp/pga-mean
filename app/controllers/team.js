@@ -45,14 +45,18 @@ exports.render = function(req, res) {
             "finalScore": 99,
             "trashBirdies": 0,
             "eagles": 0,
-            "rnds": []
+            "tross": 0,
+            "rnds": [],
+            "others": []
         };
         for (var i = 0; i < rounds; i++) {
             data.rnds.push({
                 "eagles": 0,
                 "trashBirdies": 0,
+                "tross": 0,
                 "score": 0,
-                "lowRound": false
+                "lowRound": false,
+                "others": []
             })
         }
         return data;
@@ -125,7 +129,11 @@ exports.render = function(req, res) {
                             //is first hole of round? needs special logic
                             if (scorecard.p.rnds[i].holes[n].n == "1") {
                                 //did you eagle the first hole?
-                                if (scorecard.p.rnds[i].holes[n].pDay == "-2") {
+                                if (scorecard.p.rnds[i].holes[n].pDay == "-3") {
+                                    //nice albatross guy
+                                    data.rnds[i].tross++;
+                                    data.tross++;
+                                } else if (scorecard.p.rnds[i].holes[n].pDay == "-2") {
                                     data.rnds[i].eagles++;
                                     data.eagles++;
                                     //did you birdie a trash hole
@@ -134,10 +142,18 @@ exports.render = function(req, res) {
                                         data.rnds[i].trashBirdies++;
                                         data.trashBirdies++;
                                     }
+                                } else if (Number(scorecard.p.rnds[i].holes[n].pDay) >= 2) {
+                                    //looks like double bogey or worse
+                                    data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
+                                    data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
                                 }
                             } else {
-                                //did you eagle - your current round score minus previous hole's current round score is -2 or less?
-                                if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -2) {
+                                if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -3) {
+                                    //nice albatross guy
+                                    data.rnds[i].tross++;
+                                    data.tross++;
+                                } else if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -2) {
+                                    //did you eagle - your current round score minus previous hole's current round score is -2 or less?
                                     data.rnds[i].eagles++;
                                     data.eagles++;
                                 } else if (isTrashHole(scorecard.p.rnds[i].holes[n].n)) {
@@ -145,6 +161,10 @@ exports.render = function(req, res) {
                                         data.rnds[i].trashBirdies++;
                                         data.trashBirdies++;
                                     }
+                                } else if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) >= 2) {
+                                    //looks like double bogey or worse
+                                    data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
+                                    data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
                                 }
                             }
                             //if final hole, set your final score for the round
@@ -170,16 +190,27 @@ exports.render = function(req, res) {
         return User.findOne({"id":id}).exec();
     }
 
-    function getMoneyEarned(player) {
+    function getMoneyEarned(player,isAnti) {
         //any final place trash?
         var money = 0;
-        money += getFinalScoreMoney(player.position);
         money += player.eagles * tournamentJSON.eaglePrice;
         money += player.trashBirdies * tournamentJSON.trashPrice;
+        if (isAnti) {
+            //if anti, start with just do the opposite for eagles, trash birdies, and final score
+            money *= -1;
+            for (var i = 0; i < player.others.length; i++) {
+                money += tournamentJSON.parOrWorsePayoutsAnti[player.others[i]];
+            }
+        } else {
+            for (var j = 0; j < player.others.length; j++) {
+                money += tournamentJSON.parOrWorsePayouts[player.others[j]];
+            }
+        }
+        money += getFinalScoreMoney(player.position,isAnti);
         return money;
     }
 
-    function getFinalScoreMoney(position) {
+    function getFinalScoreMoney(position,isAnti) {
         var money = 0;
         if (position !== "CUT") {
             //remove T from number if player is tied
@@ -191,6 +222,11 @@ exports.render = function(req, res) {
             } else if (position <= 3) {
                 money = 10;
             } else if (position <=10) {
+                money = 5;
+            }
+        } else {
+            if (isAnti) {
+                //if cut and anti - you get 5 bucks
                 money = 5;
             }
         }
@@ -212,11 +248,10 @@ exports.render = function(req, res) {
                 for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
                     if (groupsAndScores[i][j].id == leaderboard[0].leaderboard.players[k].player_id) {
                         groupsAndScores[i][j].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
-                        groupsAndScores[i][j].money = getMoneyEarned(groupsAndScores[i][j]);
                     }
                 }
-                //inverse money for antis
-                if (j === groupsAndScores[i].length - 1) groupsAndScores[i][j].money *= -1;
+                var isAnti = (j == groupsAndScores[i].length - 1);
+                groupsAndScores[i][j].money = getMoneyEarned(groupsAndScores[i][j],isAnti);
             }
         }
         res.json(groupsAndScores);

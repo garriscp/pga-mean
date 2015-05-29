@@ -1,7 +1,8 @@
 module.exports = function(app) {
-    var index = require('../controllers/group');
+    var index = require('../controllers/team');
     var flight = require('../controllers/flight');
     var Player = require('../models/player.js');
+    var User = require('../models/user.js');
 
     app.use(function(req,res,next){
         next();
@@ -33,6 +34,32 @@ module.exports = function(app) {
         });
     });
 
+
+    app.route('/users')
+
+    // get all the users
+    .get(function(req, res) {
+        User.find(function(err, players) {
+            if (err){
+                res.send(err);
+            } else {
+                res.json(players);
+            }
+        });
+    });
+
+    app.route('/users/:user_id')
+
+        // get user with id
+        .get(function(req, res) {
+            User.findOne({"id":req.params.user_id}, function(err, user) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.json(user);
+                }
+            });
+        });
 
 
     app.route('/test')

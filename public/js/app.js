@@ -9,8 +9,11 @@ app.factory('mainFactory', ["$http", function($http){
         getFlightData: function() {
             return $http.get('/flight')
         },
-        getNameFromId: function(id) {
-            return $http.get('/players/' + id);
+        getNames: function() {
+            return $http.get('/users');
+        },
+        getNameById: function(id) {
+            return $http.get('/users/' + id);
         }
     }
 
@@ -18,16 +21,21 @@ app.factory('mainFactory', ["$http", function($http){
 
 app.controller('mainController', function($scope,mainFactory) {
 
-   $scope.teams = [];
-   $scope.flights = [];
-   $scope.sortedFlights = [];
+    $scope.teams = [];
+    $scope.sortedFlights = [];
+    $scope.namesData = [];
 
-   mainFactory.getData().then(function(data){
+    mainFactory.getData().then(function(data){
        $scope.teams = data.data;
-   });
+    });
 
     mainFactory.getFlightData().then(function(data){
         $scope.sortedFlights = data.data;
+    });
+
+    mainFactory.getNames().then(function(data){
+        $scope.namesData = _.sortBy( data.data, "id");
+        console.log($scope.namesData);
     });
 
 });
@@ -58,6 +66,57 @@ app.directive("players", function() {
                     angular.forEach(teamsMoney, function (money,index) {
                         teamsMoney[index] = money - avg;
                         html += '<td>' + teamsMoney[index] + '</td>';
+                    });
+                    replaceMoney(html);
+                }
+            });
+
+            function replaceMoney(html) {
+                element.replaceWith(html);
+            }
+        }
+    }
+});
+
+app.directive("flights", function() {
+    return {
+        link: function (scope, element) {
+            scope.$watch("sortedFlights",function(flights){
+                if (flights.length) {
+                    var html = "";
+                    var teamsMoney = [];
+                    //set each teams money to 0
+                    angular.forEach(scope.teams, function(team, index){
+                        teamsMoney[index] = 0;
+                    });
+                    angular.forEach(flights, function (flight, index) {
+                        angular.forEach(flight, function (player, index) {
+                            teamsMoney[player.userId] += Number(player.money);
+                        });
+                    });
+                    angular.forEach(teamsMoney, function (money,index) {
+                        html += '<td>' + teamsMoney[index] + '</td>';
+                    });
+                    replaceMoney(html);
+                }
+            });
+
+            function replaceMoney(html) {
+                element.replaceWith(html);
+            }
+        }
+    }
+});
+
+
+app.directive("users", function() {
+    return {
+        link: function (scope, element) {
+            scope.$watch("namesData",function(users){
+                if (users.length) {
+                    var html = "";
+                    angular.forEach(users, function (user,index) {
+                        html += '<td>' + user.name + '</td>';
                     });
                     replaceMoney(html);
                 }

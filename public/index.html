@@ -15,7 +15,7 @@
 
 <body ng-controller="mainController" class="pga-mean-container">
     <table class="table table-bordered table-condensed" ng-repeat="team in teams">
-        <caption>Group {{$index}} - Total Money Earned: {{team.money}}</caption>
+        <caption>Team {{$index}} - Total Money Earned: {{team.money}}</caption>
         <thead>
             <tr>
                 <th>User</th>
@@ -25,6 +25,7 @@
                 <th>Score</th>
                 <th>Eagles</th>
                 <th>Trash Birdies</th>
+                <th>Doubles or worse</th>
                 <th>RD 1</th>
                 <th>RD 2</th>
                 <th>RD 3</th>
@@ -40,10 +41,12 @@
                 <td>{{player.finalScore}}</td>
                 <td>{{player.eagles}}</td>
                 <td>{{player.trashBirdies}}</td>
+                <td>{{player.others}}</td>
                 <td ng-repeat="round in player.rnds" ng-class="{lowround: round.lowRound}">
                     <div>Score: {{round.score}}</div>
                     <div>Eagles: {{round.eagles}}</div>
                     <div>Trash Birdies: {{round.trashBirdies}}</div>
+                    <div>Doubles or worse: {{round.others}}</div>
                 </td>
             </tr>
         </tbody>
@@ -57,7 +60,6 @@
             <th>Golfer</th>
             <th>Money</th>
             <th>Position</th>
-            <th>Numeric-Position</th>
             <th>Score</th>
             <th>RD 1</th>
             <th>RD 2</th>
@@ -71,7 +73,6 @@
             <td>{{player.name}}</td>
             <td>{{player.money}}</td>
             <td>{{player.position}}</td>
-            <td>{{player.numericPosition}}</td>
             <td>{{player.finalScore}}</td>
             <td ng-repeat="round in player.rnds">{{round.score}}</td>
         </tr>
@@ -83,17 +84,17 @@
         <thead>
         <tr>
             <th>Pay Event</th>
-            <th>User 0</th>
-            <th>User 1</th>
-            <th>User 2</th>
-            <th>User 3</th>
-            <th>User 4</th>
+            <th users="true"></th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>Final Score + Trash</td>
             <td players="true"></td>
+        </tr>
+        <tr>
+            <td>Payout from flights</td>
+            <td flights="true"></td>
         </tr>
         </tbody>
     </table>
