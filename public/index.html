@@ -15,12 +15,12 @@
 
 <body ng-controller="mainController" class="pga-mean-container">
     <table class="table table-bordered table-condensed" ng-repeat="team in teams">
-        <caption>Team {{$index}} - Total Money Earned: {{team.money}}</caption>
+        <caption>Team {{$index}}</caption>
         <thead>
             <tr>
                 <th>User</th>
                 <th>Golfer</th>
-                <th>Money</th>
+                <th style="display: none;">Money</th>
                 <th>Position</th>
                 <th>Score</th>
                 <th>Eagles</th>
@@ -36,7 +36,7 @@
             <tr ng-repeat="player in team">
                 <td>{{player.userId}}</td>
                 <td>{{player.name}}</td>
-                <td>{{player.money}}</td>
+                <td style="display: none;">{{player.money}}</td>
                 <td>{{player.position}}</td>
                 <td>{{player.finalScore}}</td>
                 <td>{{player.eagles}}</td>
@@ -79,7 +79,7 @@
         </tbody>
     </table>
 
-    <table class="table table-bordered table-condensed">
+    <!--<table class="table table-bordered table-condensed">
         <caption>Final Tally</caption>
         <thead>
         <tr>
@@ -97,6 +97,6 @@
             <td flights="true"></td>
         </tr>
         </tbody>
-    </table>
+    </table>-->
 </body>
 </html>
