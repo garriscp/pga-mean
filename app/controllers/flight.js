@@ -2,7 +2,7 @@ exports.render = function(req,res) {
     var Player = require('../models/player.js');
     var _und = require("../../node_modules/underscore/underscore-min");
 
-    var tournamentJSON = require("../models/currentTournament.json"),
+    var tournamentJSON = require("../models/travelersInsurance.json"),
         Q = require("q"),
         request = require("request");
 
