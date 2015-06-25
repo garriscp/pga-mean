@@ -126,50 +126,53 @@ exports.render = function(req, res) {
                     for (var i = 0; i < scorecard.p.rnds.length; i++) {
                         //loop through each hole of each round to check for birdie or eagle trash
                         for (var n = 0; n < scorecard.p.rnds[i].holes.length; n++) {
-                            //is first hole of round? needs special logic
-                            if (scorecard.p.rnds[i].holes[n].n == "1") {
-                                //did you eagle the first hole?
-                                if (scorecard.p.rnds[i].holes[n].pDay == "-3") {
-                                    //nice albatross guy
-                                    data.rnds[i].tross++;
-                                    data.tross++;
-                                } else if (scorecard.p.rnds[i].holes[n].pDay == "-2") {
-                                    data.rnds[i].eagles++;
-                                    data.eagles++;
-                                    //did you birdie a trash hole
-                                } else if (isTrashHole(scorecard.p.rnds[i].holes[n].n)) {
-                                    if (scorecard.p.rnds[i].holes[n].pDay == "-1") {
-                                        data.rnds[i].trashBirdies++;
-                                        data.trashBirdies++;
+                            //have you finished this hole yet? if you haven't, you wont have a score yet
+                            if (scorecard.p.rnds[i].holes[n].sc !== "") {
+                                //is first hole of round? needs special logic
+                                if (scorecard.p.rnds[i].holes[n].n == "1") {
+                                    //did you eagle the first hole?
+                                    if (scorecard.p.rnds[i].holes[n].pDay == "-3") {
+                                        //nice albatross guy
+                                        data.rnds[i].tross++;
+                                        data.tross++;
+                                    } else if (scorecard.p.rnds[i].holes[n].pDay == "-2") {
+                                        data.rnds[i].eagles++;
+                                        data.eagles++;
+                                        //did you birdie a trash hole
+                                    } else if (isTrashHole(scorecard.p.rnds[i].holes[n].n)) {
+                                        if (scorecard.p.rnds[i].holes[n].pDay == "-1") {
+                                            data.rnds[i].trashBirdies++;
+                                            data.trashBirdies++;
+                                        }
+                                    } else if (Number(scorecard.p.rnds[i].holes[n].pDay) >= 2) {
+                                        //looks like double bogey or worse
+                                        data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
+                                        data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
                                     }
-                                } else if (Number(scorecard.p.rnds[i].holes[n].pDay) >= 2) {
-                                    //looks like double bogey or worse
-                                    data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
-                                    data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
-                                }
-                            } else {
-                                if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -3) {
-                                    //nice albatross guy
-                                    data.rnds[i].tross++;
-                                    data.tross++;
-                                } else if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -2) {
-                                    //did you eagle - your current round score minus previous hole's current round score is -2 or less?
-                                    data.rnds[i].eagles++;
-                                    data.eagles++;
-                                } else if (isTrashHole(scorecard.p.rnds[i].holes[n].n)) {
-                                    if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -1) {
-                                        data.rnds[i].trashBirdies++;
-                                        data.trashBirdies++;
+                                } else {
+                                    if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -3) {
+                                        //nice albatross guy
+                                        data.rnds[i].tross++;
+                                        data.tross++;
+                                    } else if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -2) {
+                                        //did you eagle - your current round score minus previous hole's current round score is -2 or less?
+                                        data.rnds[i].eagles++;
+                                        data.eagles++;
+                                    } else if (isTrashHole(scorecard.p.rnds[i].holes[n].n)) {
+                                        if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -1) {
+                                            data.rnds[i].trashBirdies++;
+                                            data.trashBirdies++;
+                                        }
+                                    } else if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) >= 2) {
+                                        //looks like double bogey or worse
+                                        data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
+                                        data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
                                     }
-                                } else if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) >= 2) {
-                                    //looks like double bogey or worse
-                                    data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
-                                    data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
                                 }
-                            }
-                            //if final hole, set your final score for the round
-                            if (scorecard.p.rnds[i].holes[n].n == "18") {
-                                data.rnds[i].score = scorecard.p.rnds[i].holes[n].pDay;
+                                //if final hole, set your final score for the round
+                                if (scorecard.p.rnds[i].holes[n].n == "18") {
+                                    data.rnds[i].score = scorecard.p.rnds[i].holes[n].pDay;
+                                }
                             }
                         }
                     }
@@ -248,6 +251,8 @@ exports.render = function(req, res) {
                 for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
                     if (groupsAndScores[i][j].id == leaderboard[0].leaderboard.players[k].player_id) {
                         groupsAndScores[i][j].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
+                        //get the current score from the leaderboard json - we should rename from final score to current
+                        groupsAndScores[i][j].finalScore = leaderboard[0].leaderboard.players[k].total;
                     }
                 }
                 var isAnti = (j == groupsAndScores[i].length - 1);
