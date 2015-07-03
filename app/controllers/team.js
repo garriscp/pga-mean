@@ -3,7 +3,7 @@ exports.render = function(req, res) {
     var Player = require('../models/player.js');
     var User = require('../models/user.js');
 
-    var tournamentJSON = require("../models/travelersInsurance.json"),
+    var tournamentJSON = require("../models/" + req.params.tournament_id + ".json"),
         Q = require("q"),
         request = require("request");
 
@@ -56,7 +56,8 @@ exports.render = function(req, res) {
                 "tross": 0,
                 "score": 0,
                 "lowRound": false,
-                "others": []
+                "others": [],
+                "holesPlayed": 0
             })
         }
         return data;
@@ -110,11 +111,8 @@ exports.render = function(req, res) {
         var deferred = Q.defer();
         request(url, function (error, response, body) {
             if (!error) {
-
                 var scorecard = JSON.parse(body);
-
                 data = getBlankGolferData(scorecard.p.rnds.length);
-
                 getNameFromId(scorecard.p.id).then(function(player){
                     var finalRound = scorecard.p.rnds[scorecard.p.rnds.length - 1];
                     var finalHole = finalRound.holes[finalRound.holes.length - 1];
@@ -169,10 +167,23 @@ exports.render = function(req, res) {
                                         data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
                                     }
                                 }
-                                //if final hole, set your final score for the round
-                                if (scorecard.p.rnds[i].holes[n].n == "18") {
-                                    data.rnds[i].score = scorecard.p.rnds[i].holes[n].pDay;
+                                //set your current score
+                                data.rnds[i].score = scorecard.p.rnds[i].holes[n].pDay;
+                                //you've finished all 18
+                                data.rnds[i].holesPlayed = Number(scorecard.p.rnds[i].holes[n].n);
+                            } else {
+                                //if you haven't finished this hole, then the previous one is your most recently finished
+                                data.rnds[i].holesPlayed = Number(scorecard.p.rnds[i].holes[n].n) - 1;
+                                //your current score for this round
+                                if (n > 0) {
+                                    data.rnds[i].score = scorecard.p.rnds[i].holes[n-1].pDay;
+                                } else {
+                                    //if n is 0, you haven't started round
+                                    //current rd score is 0
+                                    data.rnds[i].score = 0;
                                 }
+                                //lets break out of this loop to stop checking each hole - we know this guy hasn't played any more holes
+                                break;
                             }
                         }
                     }
@@ -260,5 +271,7 @@ exports.render = function(req, res) {
             }
         }
         res.json(groupsAndScores);
+    }, function(rejection){
+        console.log(rejection);
     });
 };

@@ -1,5 +1,5 @@
 module.exports = function(app) {
-    var index = require('../controllers/team');
+    var team = require('../controllers/team');
     var flight = require('../controllers/flight');
     var Player = require('../models/player.js');
     var User = require('../models/user.js');
@@ -62,11 +62,15 @@ module.exports = function(app) {
         });
 
 
-    app.route('/test')
+    app.route('/team/:tournament_id')
 
-        .get(index.render);
+        .get(team.render);
 
-    app.route('/flight')
+    app.route('/flight/:tournament_id')
 
         .get(flight.render);
+
+    app.get('/:tournament_id', function(req,res){
+        res.sendfile('public/index.html');
+    });
 };

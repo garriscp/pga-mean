@@ -1,7 +1,7 @@
 var request = require("request");
 var fs = require("fs");
 
-request("http://www.pgatour.com/data/r/034/2015/field.json", function (error, response, body) {
+request("http://www.pgatour.com/data/r/490/2015/field.json", function (error, response, body) {
     if (!error) {
         var fieldJson = JSON.parse(body);
         var revisedField = [];

@@ -1,9 +1,5 @@
 [
     {
-        "name": "Adamonis, Brad",
-        "id": "23778"
-    },
-    {
         "name": "Adams, Blake",
         "id": "29910"
     },
@@ -14,6 +10,10 @@
     {
         "name": "Allenby, Robert",
         "id": "10885"
+    },
+    {
+        "name": "Alvarado, Benjamin",
+        "id": "31289"
     },
     {
         "name": "Anderson, Mark",
@@ -48,8 +48,8 @@
         "id": "32334"
     },
     {
-        "name": "Bilodeau, Kyle",
-        "id": "39990"
+        "name": "Berger, Daniel",
+        "id": "40026"
     },
     {
         "name": "Blair, Zac",
@@ -72,6 +72,10 @@
         "id": "33141"
     },
     {
+        "name": "Bradshaw, David S.",
+        "id": "24671"
+    },
+    {
         "name": "Brown, Scott",
         "id": "29479"
     },
@@ -92,10 +96,6 @@
         "id": "25364"
     },
     {
-        "name": "Castro, Roberto",
-        "id": "32200"
-    },
-    {
         "name": "Cejka, Alex",
         "id": "20472"
     },
@@ -104,12 +104,8 @@
         "id": "20593"
     },
     {
-        "name": "Cink, Stewart",
-        "id": "20229"
-    },
-    {
-        "name": "Clark, Tim",
-        "id": "23135"
+        "name": "Chappell, Kevin",
+        "id": "32366"
     },
     {
         "name": "Collins, Chad",
@@ -120,12 +116,16 @@
         "id": "24494"
     },
     {
-        "name": "Cornellier, Jean-Philip",
-        "id": "45862"
+        "name": "Crane, Ben",
+        "id": "23541"
     },
     {
         "name": "Curran, Jon",
         "id": "34262"
+    },
+    {
+        "name": "Daly, John",
+        "id": "01249"
     },
     {
         "name": "Davis, Brian",
@@ -140,28 +140,12 @@
         "id": "27436"
     },
     {
-        "name": "Donald, Luke",
-        "id": "23983"
-    },
-    {
         "name": "Duke, Ken",
         "id": "20104"
     },
     {
-        "name": "Els, Ernie",
-        "id": "06522"
-    },
-    {
-        "name": "English, Harris",
-        "id": "34099"
-    },
-    {
         "name": "Ernst, Derek",
         "id": "37273"
-    },
-    {
-        "name": "Every, Matt",
-        "id": "28307"
     },
     {
         "name": "Fathauer, Derek",
@@ -184,8 +168,12 @@
         "id": "30736"
     },
     {
-        "name": "Garcia, Sergio",
-        "id": "21209"
+        "name": "Frazar, Harrison",
+        "id": "21805"
+    },
+    {
+        "name": "Gainey, Tommy",
+        "id": "30750"
     },
     {
         "name": "Garnett, Brice",
@@ -204,6 +192,10 @@
         "id": "25900"
     },
     {
+        "name": "Gomez, Fabian",
+        "id": "28679"
+    },
+    {
         "name": "Gonzales, Andres",
         "id": "29720"
     },
@@ -212,24 +204,32 @@
         "id": "22892"
     },
     {
-        "name": "Grace, Branden",
-        "id": "29974"
+        "name": "Green, Garland",
+        "id": "48083"
     },
     {
         "name": "Guthrie, Luke",
         "id": "35539"
     },
     {
+        "name": "Haas, Bill",
+        "id": "24924"
+    },
+    {
         "name": "Hadwin, Adam",
         "id": "33399"
     },
     {
-        "name": "Harman, Brian",
-        "id": "27644"
+        "name": "Hahn, James",
+        "id": "32448"
     },
     {
-        "name": "Harrington, Padraig",
-        "id": "20766"
+        "name": "Hearn, David",
+        "id": "26758"
+    },
+    {
+        "name": "Henley, Russell",
+        "id": "34098"
     },
     {
         "name": "Henry, J.J.",
@@ -248,12 +248,16 @@
         "id": "35532"
     },
     {
+        "name": "Holmes, J.B.",
+        "id": "27141"
+    },
+    {
         "name": "Homa, Max",
         "id": "39977"
     },
     {
-        "name": "Horschel, Billy",
-        "id": "29420"
+        "name": "Howell III, Charles",
+        "id": "21961"
     },
     {
         "name": "Hubbard, Mark",
@@ -264,40 +268,36 @@
         "id": "34174"
     },
     {
+        "name": "Hurley III, Billy",
+        "id": "29222"
+    },
+    {
+        "name": "Immelman, Trevor",
+        "id": "22378"
+    },
+    {
         "name": "Ishikawa, Ryo",
         "id": "30852"
     },
     {
-        "name": "Johnson, Zach",
-        "id": "24024"
-    },
-    {
-        "name": "Jones, Matt",
-        "id": "26300"
-    },
-    {
-        "name": "Kelly, Jerry",
-        "id": "08075"
+        "name": "Kelly, Troy",
+        "id": "28308"
     },
     {
         "name": "Kim, Whee",
         "id": "37454"
     },
     {
+        "name": "Kisner, Kevin",
+        "id": "29478"
+    },
+    {
         "name": "Knost, Colt",
         "id": "30711"
     },
     {
-        "name": "Knox, Russell",
-        "id": "33122"
-    },
-    {
         "name": "Kokrak, Jason",
         "id": "30944"
-    },
-    {
-        "name": "Laird, Martin",
-        "id": "27936"
     },
     {
         "name": "Langley, Scott",
@@ -308,12 +308,12 @@
         "id": "29926"
     },
     {
-        "name": "Lee, Jun Hak",
-        "id": "35378"
-    },
-    {
         "name": "Leishman, Marc",
         "id": "26851"
+    },
+    {
+        "name": "Leonard, Justin",
+        "id": "10860"
     },
     {
         "name": "Levin, Spencer",
@@ -324,11 +324,7 @@
         "id": "34409"
     },
     {
-        "name": "Loupe, Andrew",
-        "id": "35300"
-    },
-    {
-        "name": "Love III PM, Davis",
+        "name": "Love III, Davis",
         "id": "01706"
     },
     {
@@ -340,16 +336,16 @@
         "id": "24912"
     },
     {
-        "name": "Mahan, Hunter",
-        "id": "24781"
-    },
-    {
-        "name": "McCoy, Lee",
-        "id": "47994"
-    },
-    {
         "name": "McGirt, William",
         "id": "31202"
+    },
+    {
+        "name": "McNealy, Maverick",
+        "id": "46442"
+    },
+    {
+        "name": "McNeill, George",
+        "id": "24490"
     },
     {
         "name": "Merrick, John",
@@ -364,16 +360,20 @@
         "id": "23800"
     },
     {
-        "name": "Molinari, Francesco",
-        "id": "25198"
-    },
-    {
         "name": "Na, Kevin",
         "id": "25396"
     },
     {
+        "name": "Newcomb, Patrick",
+        "id": "36789"
+    },
+    {
         "name": "Noh, Seung-Yul",
         "id": "29289"
+    },
+    {
+        "name": "O'Dell, Sam",
+        "id": "47958"
     },
     {
         "name": "O'Hair, Sean",
@@ -388,6 +388,10 @@
         "id": "33667"
     },
     {
+        "name": "Osborn, Garrett",
+        "id": "31559"
+    },
+    {
         "name": "Overton, Jeff",
         "id": "28475"
     },
@@ -396,32 +400,28 @@
         "id": "20691"
     },
     {
-        "name": "Pan, Cheng Tsung",
-        "id": "29908"
-    },
-    {
         "name": "Park, S.J.",
         "id": "34130"
-    },
-    {
-        "name": "Pastore, David",
-        "id": "47127"
     },
     {
         "name": "Percy, Cameron",
         "id": "22056"
     },
     {
+        "name": "Perez, Pat",
+        "id": "24361"
+    },
+    {
         "name": "Peterson, John",
         "id": "35541"
     },
     {
-        "name": "Petrovic, Tim",
-        "id": "01948"
-    },
-    {
         "name": "Pettersson, Carl",
         "id": "25345"
+    },
+    {
+        "name": "Piercy, Scott",
+        "id": "25818"
     },
     {
         "name": "Pinckney, Scott",
@@ -436,16 +436,8 @@
         "id": "30946"
     },
     {
-        "name": "Putnam, Andrew",
-        "id": "34256"
-    },
-    {
         "name": "Putnam, Michael",
         "id": "28486"
-    },
-    {
-        "name": "Rahm, Jon",
-        "id": "46970"
     },
     {
         "name": "Randolph, Jonathan",
@@ -468,10 +460,6 @@
         "id": "31193"
     },
     {
-        "name": "Rocha, Alexandre",
-        "id": "25457"
-    },
-    {
         "name": "Rodgers, Patrick",
         "id": "36699"
     },
@@ -480,8 +468,24 @@
         "id": "25562"
     },
     {
+        "name": "Sabbatini, Rory",
+        "id": "23621"
+    },
+    {
         "name": "Sainz Jr, Carlos",
         "id": "34087"
+    },
+    {
+        "name": "Saunders, Sam",
+        "id": "29223"
+    },
+    {
+        "name": "Shields, Kevin",
+        "id": "24808"
+    },
+    {
+        "name": "Simpson, Webb",
+        "id": "29221"
     },
     {
         "name": "Singh, Vijay",
@@ -500,28 +504,28 @@
         "id": "28023"
     },
     {
-        "name": "Smith, Cameron",
-        "id": "35891"
+        "name": "Stallings, Scott",
+        "id": "30692"
     },
     {
-        "name": "Snedeker, Brandt",
-        "id": "27649"
-    },
-    {
-        "name": "Stanley, Kyle",
-        "id": "30110"
-    },
-    {
-        "name": "Steele, Brendan",
-        "id": "29518"
+        "name": "Stefani, Shawn",
+        "id": "33418"
     },
     {
         "name": "Sterne, Richard",
         "id": "24459"
     },
     {
+        "name": "Streb, Robert",
+        "id": "34431"
+    },
+    {
         "name": "Streelman, Kevin",
         "id": "27214"
+    },
+    {
+        "name": "Stricker, Steve",
+        "id": "06527"
     },
     {
         "name": "Stroud, Chris",
@@ -568,8 +572,8 @@
         "id": "30927"
     },
     {
-        "name": "Toms, David",
-        "id": "02206"
+        "name": "Tringale, Cameron",
+        "id": "33419"
     },
     {
         "name": "Uihlein, Peter",
@@ -600,10 +604,6 @@
         "id": "25804"
     },
     {
-        "name": "Weir, Mike",
-        "id": "10423"
-    },
-    {
         "name": "Wheatcroft, Steve",
         "id": "25892"
     },
@@ -620,8 +620,16 @@
         "id": "21878"
     },
     {
-        "name": "Woodland, Gary",
-        "id": "31323"
+        "name": "Woods, Tiger",
+        "id": "08793"
+    },
+    {
+        "name": "Castro, Roberto",
+        "id": "32200"
+    },
+    {
+        "name": "Loupe, Andrew",
+        "id": "35300"
     },
     {
         "name": "Curtis, Ben",
@@ -632,20 +640,16 @@
         "id": "20160"
     },
     {
-        "name": "Immelman, Trevor",
-        "id": "22378"
-    },
-    {
         "name": "Teater, Josh",
         "id": "27330"
     },
     {
-        "name": "Jobe, Brandt",
-        "id": "06573"
-    },
-    {
         "name": "Taylor, Vaughn",
         "id": "23325"
+    },
+    {
+        "name": "Petrovic, Tim",
+        "id": "01948"
     },
     {
         "name": "Smith, Chris",
@@ -660,16 +664,12 @@
         "id": "20572"
     },
     {
-        "name": "Gainey, Tommy",
-        "id": "30750"
-    },
-    {
-        "name": "Daly, John",
-        "id": "01249"
-    },
-    {
         "name": "Atwal, Arjun",
         "id": "21407"
+    },
+    {
+        "name": "Stanley, Kyle",
+        "id": "30110"
     },
     {
         "name": "Day, Glen",
@@ -708,10 +708,6 @@
         "id": "20850"
     },
     {
-        "name": "Duval, David",
-        "id": "09011"
-    },
-    {
         "name": "Micheel, Shaun",
         "id": "06515"
     },
@@ -724,6 +720,10 @@
         "id": "01766"
     },
     {
+        "name": "Flesch, Steve",
+        "id": "07457"
+    },
+    {
         "name": "Boros, Guy",
         "id": "06214"
     },
@@ -734,10 +734,6 @@
     {
         "name": "Durant, Joe",
         "id": "06621"
-    },
-    {
-        "name": "Imada, Ryuji",
-        "id": "21350"
     },
     {
         "name": "Green, Nathan",
@@ -784,10 +780,6 @@
         "id": "23614"
     },
     {
-        "name": "Gamez, Robert",
-        "id": "01388"
-    },
-    {
         "name": "Henke, Nolan",
         "id": "01510"
     },
@@ -824,11 +816,19 @@
         "id": "23338"
     },
     {
+        "name": "Short, Jr., Wes",
+        "id": "07013"
+    },
+    {
         "name": "Barlow, Craig",
         "id": "19824"
     },
     {
         "name": "Uresti, Omar",
         "id": "08385"
+    },
+    {
+        "name": "Mast, Dick",
+        "id": "01755"
     }
 ]

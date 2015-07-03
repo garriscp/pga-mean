@@ -1,13 +1,18 @@
-var app = angular.module('pgaMean', []);
+var app = angular.module('pgaMean', [],function($locationProvider){
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    });
+});
 
 app.factory('mainFactory', ["$http", function($http){
 
     return {
-        getData: function() {
-            return $http.get('/test');
+        getData: function(tournament_id) {
+            return $http.get('/team' + tournament_id);
         },
-        getFlightData: function() {
-            return $http.get('/flight')
+        getFlightData: function(tournament_id) {
+            return $http.get('/flight' + tournament_id)
         },
         getNames: function() {
             return $http.get('/users');
@@ -19,17 +24,17 @@ app.factory('mainFactory', ["$http", function($http){
 
 }]);
 
-app.controller('mainController', function($scope,mainFactory) {
+app.controller('mainController', function($scope,mainFactory,$location) {
 
     $scope.teams = [];
     $scope.sortedFlights = [];
     $scope.namesData = [];
 
-    mainFactory.getData().then(function(data){
+    mainFactory.getData($location.path()).then(function(data){
        $scope.teams = data.data;
     });
 
-    mainFactory.getFlightData().then(function(data){
+    mainFactory.getFlightData($location.path()).then(function(data){
         $scope.sortedFlights = data.data;
     });
 
