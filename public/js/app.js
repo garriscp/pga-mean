@@ -8,7 +8,7 @@ var app = angular.module('pgaMean', [],function($locationProvider){
 app.factory('mainFactory', ["$http", function($http){
 
     return {
-        getData: function(tournament_id) {
+        getTeams: function(tournament_id) {
             return $http.get('/team' + tournament_id);
         },
         getFlightData: function(tournament_id) {
@@ -24,24 +24,38 @@ app.factory('mainFactory', ["$http", function($http){
 
 }]);
 
-app.controller('mainController', function($scope,mainFactory,$location) {
+app.controller('mainController', function($scope,mainFactory,$location,$q) {
 
     $scope.teams = [];
     $scope.sortedFlights = [];
     $scope.namesData = [];
 
-    mainFactory.getData($location.path()).then(function(data){
-       $scope.teams = data.data;
-    });
+    var getTeams = mainFactory.getTeams($location.path());
+    var getFlights = mainFactory.getFlightData($location.path());
 
-    mainFactory.getFlightData($location.path()).then(function(data){
-        $scope.sortedFlights = data.data;
+    showLoading();
+
+    $q.all([getTeams,getFlights]).then(function(data){
+        hideLoading();
+        $scope.teams = data[0].data;
+        $scope.sortedFlights = data[1].data;
+    }, function(data){
+        //error
+        hideLoading();
+        console.log(data);
     });
 
     mainFactory.getNames().then(function(data){
         $scope.namesData = _.sortBy( data.data, "id");
-        console.log($scope.namesData);
     });
+
+    function showLoading() {
+        $(".loading").show();
+    }
+
+    function hideLoading() {
+        $(".loading").hide();
+    }
 
 });
 

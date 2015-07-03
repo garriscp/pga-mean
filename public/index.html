@@ -14,6 +14,9 @@
 </head>
 
 <body ng-controller="mainController" class="pga-mean-container">
+    <div class="loading">
+        <span class="center-helper"></span><img src="img/loading.gif" height="150" />
+    </div>
     <table class="table table-bordered table-condensed" ng-repeat="team in teams">
         <caption>Team {{$index}}</caption>
         <thead>
