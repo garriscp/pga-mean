@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="admin">
+<head>
+    <script type="text/javascript" src="jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="angular/angular.min.js"></script>
+    <script type="text/javascript" src="underscore/underscore-min.js"></script>
+
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap-theme.min.css" type="text/css" />
+
+    <script type="text/javascript" src="js/admin.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body ng-controller="adminController" class="pga-mean-container">
+    <div class="loading">
+        <span class="center-helper"></span><img src="img/loading.gif" height="150" />
+    </div>
+    <form ng-submit="buildField()">
+        <div class="form-group">
+            <label for="tournamentID">Tournament ID</label>
+            <div class="input-group">
+                <input type="text" id="tournamentID" class="form-control" ng-model="tournamentID" />
+            <span class="input-group-btn">
+                <input class="btn btn-default" type="submit" value="Build Field"/>
+            </span>
+            </div>
+        </div>
+    </form>
+    <div class="results"></div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 module.exports = function(app) {
     var team = require('../controllers/team');
     var flight = require('../controllers/flight');
+    var field = require('../controllers/field');
     var Player = require('../models/player.js');
     var User = require('../models/user.js');
 
@@ -69,6 +70,14 @@ module.exports = function(app) {
     app.route('/flight/:tournament_id')
 
         .get(flight.render);
+
+    app.route('/build/:tournament_id')
+
+        .get(field.render);
+
+    app.get('/admin', function(req,res){
+        res.sendfile('public/admin.html');
+    });
 
     app.get('/:tournament_id', function(req,res){
         res.sendfile('public/index.html');
