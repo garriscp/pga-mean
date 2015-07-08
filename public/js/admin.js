@@ -11,7 +11,6 @@ app.controller('adminController', function($scope,mainFactory) {
 
     $scope.buildField = function(){
         mainFactory.buildField($scope.tournamentID).then(function(data){
-            console.log(data);
             $(".results").html("Field Successfully Updated --> " + JSON.stringify(data.data));
         },function(data){
             $(".results").html("There was an error --> " + JSON.stringify(data.data));

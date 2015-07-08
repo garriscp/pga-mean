@@ -5,7 +5,6 @@ exports.render = function(req,res) {
 
     request("http://www.pgatour.com/data/r/" + req.params.tournament_id + "/2015/field.json", function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(response);
             var fieldJson = JSON.parse(body);
             var revisedField = [];
             for (var i = 0; i < fieldJson.Tournament.Players.length; i++) {
