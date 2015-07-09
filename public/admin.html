@@ -29,5 +29,49 @@
         </div>
     </form>
     <div class="results"></div>
+    <select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select>
+
+    <table class="table table-bordered table-condensed">
+        <caption>Draft Teams</caption>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Team 0</th>
+            <th>Team 1</th>
+            <th>Team 2</th>
+            <th>Team 3</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Player Selection</td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+            </tr>
+            <tr>
+                <td>Player Selection</td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+            </tr>
+            <tr>
+                <td>Player Selection</td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+            </tr>
+            <tr>
+                <td>Player Selection</td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

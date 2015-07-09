@@ -22,13 +22,22 @@ exports.render = function(req,res) {
                 }
             });*/
             //res.json(revisedField);
-            Player.create(revisedField, function (err, field) {
+            //let's wipe current field before adding new one so we don't get duplicates
+            //I'll remove this in the future
+            Player.remove({}, function(err) {
                 if (err) {
-                    res.status(500).send("error importing data");
+                    res.status(500).send("error wiping data before new field import");
                 } else {
-                    res.json(field);
+                    Player.create(revisedField, function (err, field) {
+                        if (err) {
+                            res.status(500).send("error importing data");
+                        } else {
+                            res.json(field);
+                        }
+                    });
                 }
             });
+
         } else {
             res.status(500).send("Error connecting to the pga field data");
         }
