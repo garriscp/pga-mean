@@ -1,37 +1,66 @@
-var app = angular.module('pgaMean', [],function($locationProvider){
+var app = angular.module('pgaMean', ['ui.router'],function($locationProvider){
     $locationProvider.html5Mode({
         enabled: true,
         requireBase: false
     });
 });
 
+app.config(function($stateProvider, $urlRouterProvider) {
+    //
+    // For any unmatched url, redirect to /state1
+    $urlRouterProvider.otherwise("/home");
+    //
+    // Now set up the states
+    $stateProvider
+        .state('home', {
+            url: "/",
+            templateUrl: "/views/home.html"
+        })
+        .state('tournament', {
+            url: "/tournaments/:tournament_id",
+            templateUrl: "/views/tournament.html",
+            controller: "tournamentController"
+        })
+});
+
 app.factory('mainFactory', ["$http", function($http){
 
     return {
         getTeams: function(tournament_id) {
-            return $http.get('/team' + tournament_id);
+            return $http.get('/team/' + tournament_id);
         },
         getFlightData: function(tournament_id) {
-            return $http.get('/flight' + tournament_id)
+            return $http.get('/flight/' + tournament_id)
         },
         getNames: function() {
             return $http.get('/users');
         },
         getNameById: function(id) {
             return $http.get('/users/' + id);
+        },
+        getTournaments: function() {
+            return $http.get('/tournaments');
         }
     }
 
 }]);
 
-app.controller('mainController', function($scope,mainFactory,$location,$q) {
+app.controller('mainController', function($stateParams) {
+
+});
+
+app.controller('tournamentController', function($scope,mainFactory,$location,$q,$stateParams, $state) {
+    var tournament_id = $stateParams.tournament_id;
+
+    $scope.state = $state.current;
+    $scope.params = $stateParams;
 
     $scope.teams = [];
     $scope.sortedFlights = [];
     $scope.namesData = [];
 
-    var getTeams = mainFactory.getTeams($location.path());
-    var getFlights = mainFactory.getFlightData($location.path());
+    var getTeams = mainFactory.getTeams(tournament_id);
+    var getFlights = mainFactory.getFlightData(tournament_id);
 
     showLoading();
 
@@ -56,7 +85,6 @@ app.controller('mainController', function($scope,mainFactory,$location,$q) {
     function hideLoading() {
         $(".loading").hide();
     }
-
 });
 
 app.directive("players", function() {

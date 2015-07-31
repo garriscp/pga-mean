@@ -2,50 +2,50 @@ exports.render = function(req,res) {
     var request = require("request");
     var fs = require("fs");
     var Player = require('../models/player.js');
+    var Q = require("q");
 
-    request("http://www.pgatour.com/data/r/" + req.params.tournament_id + "/2015/field.json", function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var fieldJson = JSON.parse(body);
-            var revisedField = [];
-            for (var i = 0; i < fieldJson.Tournament.Players.length; i++) {
-                revisedField.push({
-                    "name": fieldJson.Tournament.Players[i].PlayerName,
-                    "id": fieldJson.Tournament.Players[i].TournamentPlayerId,
-                });
+    function updatePlayers() {
+        var promises = [];
+        return urlPromise("http://www.pgatour.com/data/r/" + req.params.tournament_id + "/2015/field.json");
+    }
+
+    function updatePlayer(newPlayer) {
+        return Player.findOneAndUpdate(
+            { 'id': newPlayer.id },
+            { 'id': newPlayer.id, 'name': newPlayer.name },
+            { 'upsert': true, 'new': true }
+        ).exec();
+    }
+
+    function urlPromise(url) {
+        var deferred = Q.defer();
+        request(url, function (error, response, body) {
+            if (!error) {
+                var scorecard = JSON.parse(body);
+                deferred.resolve(scorecard);
+            } else {
+                deferred.reject(error);
             }
-            /*var field = utility.unescapeQuotes(JSON.stringify(revisedField, null, 4));
-            fs.writeFile("./app/models/field.json", field, function(err) {
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("JSON saved");
-                }
-            });*/
-            //res.json(revisedField);
-            //let's wipe current field before adding new one so we don't get duplicates
-            //I'll remove this in the future
-            Player.remove({}, function(err) {
-                if (err) {
-                    res.status(500).send("error wiping data before new field import");
-                } else {
-                    Player.create(revisedField, function (err, field) {
-                        if (err) {
-                            res.status(500).send("error importing data");
-                        } else {
-                            res.json(field);
-                        }
-                    });
-                }
-            });
+        });
+        return deferred.promise;
+    }
 
-        } else {
-            res.status(500).send("Error connecting to the pga field data");
+    updatePlayers().then(function(fieldJson){
+        var promises = [];
+        for (var i = 0; i < fieldJson.Tournament.Players.length; i++) {
+            var newPlayer = {};
+            newPlayer = {
+                "name": fieldJson.Tournament.Players[i].PlayerName,
+                "id": fieldJson.Tournament.Players[i].TournamentPlayerId,
+            };
+            var newPromise = updatePlayer(newPlayer);
+            promises.push(newPromise);
         }
+        Q.all(promises).then(function(data){
+            res.json(data);
+        },function(err){
+            res.json(err);
+        });
     });
 
-    var utility = {
-        unescapeQuotes: function(string) {
-            return string.replace(/\\"/g, '"');
-        }
-    };
 };

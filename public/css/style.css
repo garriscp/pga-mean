@@ -28,3 +28,8 @@
     vertical-align: middle;
     max-height: 100%;
 }
+
+.pga-mean-container .tournament-links a {
+    display: block;
+    padding: 5px;
+}

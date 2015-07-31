@@ -2,6 +2,8 @@ module.exports = function(app) {
     var team = require('../controllers/team');
     var flight = require('../controllers/flight');
     var field = require('../controllers/field');
+    var wipe = require('../controllers/wipe');
+    var tournaments = require('../controllers/tournaments');
     var Player = require('../models/player.js');
     var User = require('../models/user.js');
 
@@ -75,11 +77,23 @@ module.exports = function(app) {
 
         .get(field.render);
 
+    app.route('/tournaments')
+
+        .get(tournaments.render);
+
     app.get('/admin', function(req,res){
         res.sendfile('public/admin.html');
     });
 
-    app.get('/:tournament_id', function(req,res){
+    //app.route('/wipe')
+
+        //.get(wipe.render);
+
+    app.get('/tournaments/:tournament_id', function(req,res){
+        res.sendfile('public/index.html');
+    });
+
+    app.get('/', function(req,res){
         res.sendfile('public/index.html');
     });
 };
