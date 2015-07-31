@@ -136,16 +136,16 @@ exports.render = function(req, res) {
                                     } else if (scorecard.p.rnds[i].holes[n].pDay == "-2") {
                                         data.rnds[i].eagles++;
                                         data.eagles++;
+                                    } else if (Number(scorecard.p.rnds[i].holes[n].pDay) >= 2) {
+                                        //looks like double bogey or worse
+                                        data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
+                                        data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
                                         //did you birdie a trash hole - make sure to use cNum in case player started on the back 9
                                     } else if (isTrashHole(scorecard.p.rnds[i].holes[n].cNum)) {
                                         if (scorecard.p.rnds[i].holes[n].pDay == "-1") {
                                             data.rnds[i].trashBirdies++;
                                             data.trashBirdies++;
                                         }
-                                    } else if (Number(scorecard.p.rnds[i].holes[n].pDay) >= 2) {
-                                        //looks like double bogey or worse
-                                        data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
-                                        data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay));
                                     }
                                 } else {
                                     if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -3) {
@@ -156,15 +156,15 @@ exports.render = function(req, res) {
                                         //did you eagle - your current round score minus previous hole's current round score is -2 or less?
                                         data.rnds[i].eagles++;
                                         data.eagles++;
-                                    } else if (isTrashHole(scorecard.p.rnds[i].holes[n].cNum)) {
-                                        if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) == -1) {
-                                            data.rnds[i].trashBirdies++;
-                                            data.trashBirdies++;
-                                        }
                                     } else if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)) >= 2) {
                                         //looks like double bogey or worse
                                         data.rnds[i].others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
                                         data.others.push(Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n-1].pDay)));
+                                    } else if (isTrashHole(scorecard.p.rnds[i].holes[n].cNum)) {
+                                        if (Number(scorecard.p.rnds[i].holes[n].pDay) - Number((scorecard.p.rnds[i].holes[n - 1].pDay)) == -1) {
+                                            data.rnds[i].trashBirdies++;
+                                            data.trashBirdies++;
+                                        }
                                     }
                                 }
                                 //set your current score
