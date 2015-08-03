@@ -1,9 +1,8 @@
 <div>
     <table class="table table-bordered table-condensed" ng-repeat="team in teams">
-        <caption>Team {{$index}}</caption>
+        <caption>Team {{team.name}}</caption>
         <thead>
         <tr>
-            <th>User</th>
             <th>Golfer</th>
             <th style="display: none;">Money</th>
             <th>Position</th>
@@ -18,8 +17,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="player in team">
-            <td>{{player.userId}}</td>
+        <tr ng-repeat="player in team.players">
             <td>{{player.name}}</td>
             <td style="display: none;">{{player.money}}</td>
             <td>{{player.position}}</td>

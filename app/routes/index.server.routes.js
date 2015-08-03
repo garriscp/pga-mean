@@ -3,7 +3,7 @@ module.exports = function(app) {
     var flight = require('../controllers/flight');
     var field = require('../controllers/field');
     var wipe = require('../controllers/wipe');
-    var tournaments = require('../controllers/tournaments');
+    var tournament = require('../controllers/tournament');
     var Player = require('../models/player.js');
     var User = require('../models/user.js');
 
@@ -79,7 +79,7 @@ module.exports = function(app) {
 
     app.route('/tournaments')
 
-        .get(tournaments.render);
+        .get(tournament.render);
 
     app.get('/admin', function(req,res){
         res.sendfile('public/admin.html');

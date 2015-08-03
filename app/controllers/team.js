@@ -2,10 +2,13 @@ exports.render = function(req, res) {
 
     var Player = require('../models/player.js');
     var User = require('../models/user.js');
+    var Tournament = require('../models/tournament.js');
 
-    var tournamentJSON = require("../models/" + req.params.tournament_id + ".json"),
-        Q = require("q"),
+    var Q = require("q"),
+        util = require("util"),
         request = require("request");
+
+    var tournamentJSON = {};
 
     function getAllScores(tournament) {
         var promises = [];
@@ -15,6 +18,8 @@ exports.render = function(req, res) {
         for (var a = 0; a < tournament.teams.length; a++) {
             var promise = getTeamScores(tournament.teams[a]);
             promises.push(promise);
+            var namePromise = getUserFromId(tournament.teams[a].user_id);
+            promises.push(namePromise);
         }
         return Q.all(promises);
     }
@@ -69,11 +74,11 @@ exports.render = function(req, res) {
         //loop through teams
         for (var i = 0; i < groupsAndScores.length; i++) {
             //and players
-            for (var j = 0; j < groupsAndScores[i].length; j++) {
+            for (var j = 0; j < groupsAndScores[i].players.length; j++) {
                 //and rounds
-                for (var k = 0; k < groupsAndScores[i][j].rnds.length; k++) {
-                    if (Number(groupsAndScores[i][j].rnds[k].score) < lowScoresPerRound[k]) {
-                        lowScoresPerRound[k] = Number(groupsAndScores[i][j].rnds[k].score);
+                for (var k = 0; k < groupsAndScores[i].players[j].rnds.length; k++) {
+                    if (Number(groupsAndScores[i].players[j].rnds[k].score) < lowScoresPerRound[k]) {
+                        lowScoresPerRound[k] = Number(groupsAndScores[i].players[j].rnds[k].score);
                     }
                 }
             }
@@ -81,11 +86,11 @@ exports.render = function(req, res) {
 
         for (var a = 0; a < groupsAndScores.length; a++) {
             //and players
-            for (var b = 0; b < groupsAndScores[a].length; b++) {
+            for (var b = 0; b < groupsAndScores[a].players.length; b++) {
                 //and rounds
-                for (var c = 0; c < groupsAndScores[a][b].rnds.length; c++) {
-                    if (lowScoresPerRound[c] == Number(groupsAndScores[a][b].rnds[c].score)) {
-                        groupsAndScores[a][b].rnds[c].lowRound = true;
+                for (var c = 0; c < groupsAndScores[a].players[b].rnds.length; c++) {
+                    if (lowScoresPerRound[c] == Number(groupsAndScores[a].players[b].rnds[c].score)) {
+                        groupsAndScores[a].players[b].rnds[c].lowRound = true;
                     }
                 }
             }
@@ -204,6 +209,10 @@ exports.render = function(req, res) {
         return User.findOne({"id":id}).exec();
     }
 
+    function getTournamentFromId(id) {
+        return Tournament.findOne({"tournamentCode":id}).exec();
+    }
+
     function getMoneyEarned(player,isAnti) {
         //any final place trash?
         var money = 0;
@@ -247,31 +256,55 @@ exports.render = function(req, res) {
         return money;
     }
 
-    getAllScores(tournamentJSON).then(function(groupsAndScores){
-        //cut the leaderboard object out of the array to be sent to FE
-        var leaderboard = groupsAndScores.splice(0,1);
+    function setUserNamesToTeams(data) {
 
-        groupsAndScores = calcLowRounds(groupsAndScores);
+        var newData = [];
 
-        //loop through teams
-        for (var i = 0; i < groupsAndScores.length; i++) {
-            //and players
-            for (var j = 0; j < groupsAndScores[i].length; j++) {
-                groupsAndScores[i][j].userId = tournamentJSON.teams[i].user_id;
-                //check against players in leaderboard
-                for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
-                    if (groupsAndScores[i][j].id == leaderboard[0].leaderboard.players[k].player_id) {
-                        groupsAndScores[i][j].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
-                        //get the current score from the leaderboard json - we should rename from final score to current
-                        groupsAndScores[i][j].finalScore = leaderboard[0].leaderboard.players[k].total;
-                    }
-                }
-                var isAnti = (j == groupsAndScores[i].length - 1);
-                groupsAndScores[i][j].money = getMoneyEarned(groupsAndScores[i][j],isAnti);
+        for (var i = 0; i < data.length; i++) {
+            if (!util.isArray(data[i])) {
+                data[i-1].userName = data[i].name;
+                newData.push({
+                    "name": data[i].name,
+                    "players": data[i-1]
+                })
             }
         }
-        res.json(groupsAndScores);
-    }, function(rejection){
-        console.log(rejection);
+
+        return newData;
+    }
+
+    getTournamentFromId(req.params.tournament_id).then(function(tournament){
+        //set tournamentJSON globally so everyone can access
+        tournamentJSON = tournament;
+        getAllScores(tournament).then(function(groupsAndScores){
+            //cut the leaderboard object out of the array to be sent to FE
+            var leaderboard = groupsAndScores.splice(0,1);
+
+            groupsAndScores = setUserNamesToTeams(groupsAndScores);
+
+            groupsAndScores = calcLowRounds(groupsAndScores);
+
+            //loop through teams
+            for (var i = 0; i < groupsAndScores.length; i++) {
+                //and players
+                for (var j = 0; j < groupsAndScores[i].players.length; j++) {
+                    //check against players in leaderboard
+                    for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
+                        if (groupsAndScores[i].players[j].id == leaderboard[0].leaderboard.players[k].player_id) {
+                            groupsAndScores[i].players[j].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
+                            //get the current score from the leaderboard json - we should rename from final score to current
+                            groupsAndScores[i].players[j].finalScore = leaderboard[0].leaderboard.players[k].total;
+                        }
+                    }
+                    var isAnti = (j == groupsAndScores[i].length - 1);
+                    groupsAndScores[i].players[j].money = getMoneyEarned(groupsAndScores[i].players[j],isAnti);
+                }
+            }
+            res.json(groupsAndScores);
+
+        }, function(rejection){
+            console.log(rejection);
+        });
     });
+
 };

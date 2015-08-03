@@ -35,9 +35,6 @@ app.factory('mainFactory', ["$http", function($http){
         getNames: function() {
             return $http.get('/users');
         },
-        getNameById: function(id) {
-            return $http.get('/users/' + id);
-        },
         getTournaments: function() {
             return $http.get('/tournaments');
         }
@@ -45,8 +42,11 @@ app.factory('mainFactory', ["$http", function($http){
 
 }]);
 
-app.controller('mainController', function($stateParams) {
-
+app.controller('mainController', function($stateParams, $scope, mainFactory) {
+    var tournament_id = $stateParams.tournament_id;
+    mainFactory.getTournaments(tournament_id).then(function(tournaments){
+        $scope.tournaments = tournaments.data;
+    })
 });
 
 app.controller('tournamentController', function($scope,mainFactory,$location,$q,$stateParams, $state) {

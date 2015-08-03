@@ -1,10 +1,12 @@
 exports.render = function(req,res) {
     var Player = require('../models/player.js');
     var _und = require("../../node_modules/underscore/underscore-min");
+    var Tournament = require('../models/tournament.js');
 
-    var tournamentJSON = require("../models/" + req.params.tournament_id + ".json"),
-        Q = require("q"),
+    var Q = require("q"),
         request = require("request");
+
+    var tournamentJSON = {};
 
     function getAllScores(tournament) {
         var flights = getFlightsFromTeams(tournament.teams);
@@ -90,6 +92,10 @@ exports.render = function(req,res) {
         return Player.findOne({"id":id}).exec();
     }
 
+    function getTournamentFromId(id) {
+        return Tournament.findOne({"tournamentCode":id}).exec();
+    }
+
     function getFlightsFromTeams(teams) {
         var flights = [];
         //assume everyone has the same amount of players
@@ -131,40 +137,46 @@ exports.render = function(req,res) {
         return numericPosition;
     }
 
-    getAllScores(tournamentJSON).then(function(groupsAndScores){
-        //cut the leaderboard object out of the array to be sent to FE
-        var leaderboard = groupsAndScores.splice(0,1);
-        var sortedFlights = [];
-        for (var i = 0; i < groupsAndScores.length; i++) {
-            for (var n = 0; n < groupsAndScores[i].length; n++) {
-                groupsAndScores[i][n].finalScore = parseInt(groupsAndScores[i][n].finalScore);
-                groupsAndScores[i][n].userId = tournamentJSON.teams[n].user_id;
+    getTournamentFromId(req.params.tournament_id).then(function(tournament){
+        //set tournamentJSON globally so everyone can access
+        tournamentJSON = tournament;
+        getAllScores(tournament).then(function(groupsAndScores){
+            //cut the leaderboard object out of the array to be sent to FE
+            var leaderboard = groupsAndScores.splice(0,1);
+
+            var sortedFlights = [];
+            for (var i = 0; i < groupsAndScores.length; i++) {
+                for (var n = 0; n < groupsAndScores[i].length; n++) {
+                    groupsAndScores[i][n].finalScore = parseInt(groupsAndScores[i][n].finalScore);
+                    groupsAndScores[i][n].userId = tournamentJSON.teams[n].user_id;
 
 
-                //add some stuff from the leaderboard json
-                for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
-                    if (groupsAndScores[i][n].id == leaderboard[0].leaderboard.players[k].player_id) {
-                        groupsAndScores[i][n].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
-                        groupsAndScores[i][n].numericPosition = getNumericPosition(groupsAndScores[i][n].position,groupsAndScores[i][n].finalScore);
+                    //add some stuff from the leaderboard json
+                    for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
+                        if (groupsAndScores[i][n].id == leaderboard[0].leaderboard.players[k].player_id) {
+                            groupsAndScores[i][n].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
+                            groupsAndScores[i][n].numericPosition = getNumericPosition(groupsAndScores[i][n].position,groupsAndScores[i][n].finalScore);
+                        }
                     }
                 }
-            }
-            if (i !== groupsAndScores.length -1) {
-                sortedFlights[i] = _und.sortBy( groupsAndScores[i], "numericPosition");
-            } else {
-                //reverse order if we are the last group - assuming antis
-                sortedFlights[i] = _und.sortBy( groupsAndScores[i], "numericPosition").reverse();
-            }
+                if (i !== groupsAndScores.length -1) {
+                    sortedFlights[i] = _und.sortBy( groupsAndScores[i], "numericPosition");
+                } else {
+                    //reverse order if we are the last group - assuming antis
+                    sortedFlights[i] = _und.sortBy( groupsAndScores[i], "numericPosition").reverse();
+                }
 
-            for (var a = 0; a < sortedFlights[i].length; a++) {
-                sortedFlights[i][a].money = tournamentJSON.flightPayouts[a];
+                for (var a = 0; a < sortedFlights[i].length; a++) {
+                    sortedFlights[i][a].money = tournamentJSON.flightPayouts[a];
+                }
+                sortedFlights[i] = adjustForTies(_und.groupBy(sortedFlights[i],"numericPosition"));
+                if (i === groupsAndScores.length -1) {
+                    //reverse order if we are the last group - assuming antis
+                    sortedFlights[i] = sortedFlights[i].reverse();
+                }
             }
-            sortedFlights[i] = adjustForTies(_und.groupBy(sortedFlights[i],"numericPosition"));
-            if (i === groupsAndScores.length -1) {
-                //reverse order if we are the last group - assuming antis
-                sortedFlights[i] = sortedFlights[i].reverse();
-            }
-        }
-        res.json(sortedFlights);
+            res.json(sortedFlights);
+        });
+
     });
 };
