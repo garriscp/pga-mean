@@ -1,0 +1,32 @@
+{
+    "name": "WGC Bridgestone Invitational",
+    "eaglePrice": 2,
+    "trashHoles": [6,7,8],
+    "trashPrice": 1,
+    "flightPayouts": [10,5,0,-5,-10],
+    "parOrWorsePayouts": [0,0,0,-2,-3,-4,-5,-6,-7,-8,-9,-10],
+    "parOrWorsePayoutsAnti": [0,0,1,2,3,4,5,6,7,8,9,10],
+    "tournamentCode": "476",
+    "teams": [
+        {
+            "user_id": "0",
+            "players": [ "24502" , "21209" , "36689" , "26329" , "25572" ]
+        },
+        {
+            "user_id": "1",
+            "players": [ "34046" , "10809" , "24024" , "34360" , "24511" ]
+        },
+        {
+            "user_id": "2",
+            "players": [ "32102" , "32839" , "23108" , "01810" , "31420" ]
+        },
+        {
+            "user_id": "3",
+            "players": [ "28089" , "21528" , "25804" , "27649" , "28307" ]
+        },
+        {
+            "user_id": "3",
+            "players": [ "22405" , "30925" , "33141" , "26851" , "28300" ]
+        }
+    ]
+}

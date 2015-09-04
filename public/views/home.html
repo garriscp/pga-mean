@@ -1,6 +1,6 @@
 <div class="welcome-box">
     <h1>Fantasy Golf <span class="number">2.0</span></h1>
-    <div class="tournament-links" ng-repeat="tournament in tournaments">
-        <a ui-sref="tournament({tournament_id: '{{tournament.tournamentCode}}'})">{{tournament.name}}</a>
+    <div class="tournament-links">
+        <a ng-repeat="tournament in tournaments" ui-sref="tournament({tournament_id: '{{tournament.tournamentCode}}'})">{{tournament.name}}</a>
     </div>
 </div>

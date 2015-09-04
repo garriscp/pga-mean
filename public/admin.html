@@ -13,15 +13,16 @@
     <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
-<body ng-controller="adminController" class="pga-mean-container">
+<body ng-controller="adminController" class="pga-mean-container container-fluid">
     <div class="loading">
         <span class="center-helper"></span><img src="img/loading.gif" height="150" />
     </div>
+    <h1>New Tournament</h1>
     <form ng-submit="buildField()">
         <div class="form-group">
             <label for="tournamentID">Tournament ID</label>
             <div class="input-group">
-                <input type="text" id="tournamentID" class="form-control" ng-model="tournamentID" />
+                <input type="text" id="tournamentID" class="form-control" ng-model="tournamentID" required />
             <span class="input-group-btn">
                 <input class="btn btn-default" type="submit" value="Build Field"/>
             </span>
@@ -29,49 +30,163 @@
         </div>
     </form>
     <div class="results"></div>
-    <select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select>
 
-    <table class="table table-bordered table-condensed">
-        <caption>Draft Teams</caption>
-        <thead>
-        <tr>
-            <th></th>
-            <th>Team 0</th>
-            <th>Team 1</th>
-            <th>Team 2</th>
-            <th>Team 3</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Player Selection</td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-            </tr>
-            <tr>
-                <td>Player Selection</td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-            </tr>
-            <tr>
-                <td>Player Selection</td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-            </tr>
-            <tr>
-                <td>Player Selection</td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-                <td><select ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="players"></select></td>
-            </tr>
-        </tbody>
-    </table>
+    <form ng-submit="createTournament()">
+        <div class="form-group">
+            <label for="tournamentName">Tournament Name</label>
+            <input type="text" class="form-control" id="tournamentName" placeholder="Name" ng-model="tournamentName" required />
+        </div>
+        <div class="form-group checkbox-container">
+            <label class="checkbox-label">Trash Alley</label>
+            <label class="checkbox-inline" ng-repeat="hole in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]">
+                <input type="checkbox" id="inlineCheckbox{{hole}}" value="{{hole}}"> {{hole}}
+            </label>
+        </div>
+        <!--<div class="form-group">
+            <label for="numberOfTeams">Number of Teams</label>
+            <select class="form-control" id="numberOfTeams" ng-options="team as team for team in numberOfTeamsOptions" ng-model="numberOfTeams"></select>
+        </div>
+        <div class="form-group">
+            <label for="numberOfRounds">Number of Rounds</label>
+            <select class="form-control" id="numberOfRounds" ng-options="round as round for round in numberOfRoundsOptions" ng-model="numberOfRounds"></select>
+        </div>-->
+        <div class="form-group">
+            <h2>Team 0</h2>
+            <div class="form-group">
+                <label>User</label>
+                <select class="form-control" ng-options="user.id as user.name for user in users" ng-model="teams[0].user_id"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 0</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[0].players[0]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 1</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[0].players[1]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 2</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[0].players[2]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 3</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[0].players[3]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 4</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[0].players[4]"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <h2>Team 1</h2>
+            <div class="form-group">
+                <label>User</label>
+                <select class="form-control" ng-options="user.id as user.name for user in users" ng-model="teams[1].user_id"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 0</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[1].players[0]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 1</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[1].players[1]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 2</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[1].players[2]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 3</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[1].players[3]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 4</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[1].players[4]"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <h2>Team 2</h2>
+            <div class="form-group">
+                <label>User</label>
+                <select class="form-control" ng-options="user.id as user.name for user in users" ng-model="teams[2].user_id"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 0</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[2].players[0]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 1</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[2].players[1]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 2</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[2].players[2]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 3</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[2].players[3]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 4</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[2].players[4]"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <h2>Team 3</h2>
+            <div class="form-group">
+                <label>User</label>
+                <select class="form-control" ng-options="user.id as user.name for user in users" ng-model="teams[3].user_id"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 0</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[3].players[0]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 1</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[3].players[1]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 2</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[3].players[2]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 3</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[3].players[3]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 4</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[3].players[4]"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <h2>Team 4</h2>
+            <div class="form-group">
+                <label>User</label>
+                <select class="form-control" ng-options="user.id as user.name for user in users" ng-model="teams[4].user_id"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 0</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[4].players[0]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 1</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[4].players[1]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 2</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[4].players[2]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 3</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[4].players[3]"></select>
+            </div>
+            <div class="form-group">
+                <label>Player 4</label>
+                <select class="form-control" ng-options="player.id as player.name for player in players | orderBy: 'name'" ng-model="teams[4].players[4]"></select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    <div class="tournament-results"></div>
 </body>
 </html>

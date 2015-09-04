@@ -33,3 +33,15 @@
     display: block;
     padding: 5px;
 }
+
+.pga-mean-container .checkbox-inline {
+    padding-right: 20px;
+}
+
+.pga-mean-container .checkbox-label {
+    display: block;
+}
+
+.pga-mean-container input[type='checkbox'] {
+    cursor: pointer;
+}
