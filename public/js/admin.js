@@ -33,10 +33,6 @@ app.controller('adminController', function($scope,mainFactory) {
         {
             "user_id": "3",
             "players": [" "," "," "," "," "]
-        },
-        {
-            "user_id": "4",
-            "players": [" "," "," "," "," "]
         }
     ];
 
@@ -55,17 +51,6 @@ app.controller('adminController', function($scope,mainFactory) {
     $scope.getNumber = function(num) {
         return new Array(num);
     };
-
-    /*$scope.$watch("numberOfPlayers",function(newVal) {
-        for (var i=0; i <= $scope.teams.length; i++) {
-            $scope.teams[i].players = new Array(newVal);
-        }
-    });*/
-
-    $scope.$watch("teams",function(newVal) {
-        console.log("teams");
-        console.log($scope.teams);
-    }, true);
 
 
 
@@ -130,6 +115,18 @@ app.controller('adminController', function($scope,mainFactory) {
             })
         }
     };
+
+    $scope.deleteTournament = function(id) {
+        mainFactory.deleteTournament(id).then(function(data){
+            $(".tournament-results").html("Tournament Successfully Deleted --> " + JSON.stringify(data.data));
+        },function(data){
+            $(".tournament-results").html("There was an error --> " + JSON.stringify(data.data));
+        })
+    };
+
+    mainFactory.getTournaments().then(function(tournaments){
+        $scope.tournaments = tournaments.data;
+    })
 });
 
 
@@ -147,6 +144,12 @@ app.factory('mainFactory', ["$http", function($http){
         },
         createTournament: function(tournamentData) {
             return $http.post('/tournament', tournamentData);
+        },
+        getTournaments: function() {
+            return $http.get('/tournaments');
+        },
+        deleteTournament: function(tournament_id) {
+            return $http.delete('/tournaments/' + tournament_id)
         }
     }
 

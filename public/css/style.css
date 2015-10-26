@@ -34,6 +34,15 @@
     padding: 5px;
 }
 
+.pga-mean-container .admin-tournament-links a {
+    display: inline-block;
+    min-width: 300px;
+}
+
+.pga-mean-container .admin-tournament-links button {
+    margin: 10px;
+}
+
 .pga-mean-container .checkbox-inline {
     padding-right: 20px;
 }

@@ -2,6 +2,14 @@ var port = 1337;
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var domain = require('domain'),
+
+
+d = domain.create();
+
+d.on('error', function(err) {
+    console.error(err);
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

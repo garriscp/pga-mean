@@ -25,3 +25,16 @@ exports.create = function(req, res) {
         }
     });
 };
+
+
+exports.deleteTournament = function(req, res) {
+    var Tournament = require('../models/tournament.js');
+
+    Tournament.findOne({"tournamentCode":req.params.tournament_id}).remove(function(err, tournament){
+        if (err){
+            res.send(err);
+        } else {
+            res.json(tournament);
+        }
+    });
+};

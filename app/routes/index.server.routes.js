@@ -85,6 +85,10 @@ module.exports = function(app) {
 
         .post(tournament.create);
 
+    app.route('/tournaments/:tournament_id')
+
+        .delete(tournament.deleteTournament);
+
     app.get('/admin', function(req,res){
         res.sendfile('public/admin.html');
     });
