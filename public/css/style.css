@@ -1,10 +1,10 @@
 .pga-mean-container .lowround {
-    background-color: #076652;
+    background-color: #AEC7BA;
     color: white;
 }
 
 .pga-mean-container .anti {
-    border: 1px solid red;
+    border: 1px solid #f05f40;
 }
 
 .pga-mean-container .loading {
@@ -53,4 +53,16 @@
 
 .pga-mean-container input[type='checkbox'] {
     cursor: pointer;
+}
+
+.pga-mean-container .tournament-container {
+    background-color: #4A7061;
+    padding: 100px 20px;
+    color: white;
+}
+
+.pga-mean-container caption {
+    color: #f05f40;
+    font-size: 36px;
+    padding-top: 20px;
 }

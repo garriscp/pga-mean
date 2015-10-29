@@ -1,6 +1,62 @@
-<div class="welcome-box">
-    <h1>Fantasy Golf <span class="number">2.0</span></h1>
-    <div class="tournament-links">
-        <a ng-repeat="tournament in tournaments" ui-sref="tournament({tournament_id: '{{tournament.tournamentCode}}'})">{{tournament.name}}</a>
+<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand page-scroll" href="#page-top">Golf Degen 2.0</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="separator-right">
+                    <a class="page-scroll" ui-sref="home">Home</a>
+                </li>
+                <li class="separator-right">
+                    <a href="/admin" target="_self">Admin</a>
+                </li>
+                <li ng-repeat="tournament in tournaments">
+                    <a ui-sref="tournament({tournament_id: '{{tournament.tournamentCode}}'})">{{tournament.name}}</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</div>
+    <!-- /.container-fluid -->
+</nav>
+
+<header>
+    <div class="header-shim">
+    <div class="header-content">
+        <div class="header-content-inner">
+            <h1>Fantasy Golf the way it should be played</h1>
+            <hr>
+            <p>More clutch than Anirban Lahiri on a Sunday at Augusta.</p>
+            <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+        </div>
+    </div>
+    </div>
+</header>
+
+
+<section id="contact" class="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <h2 class="section-heading">Built by Connor Garrison</h2>
+                <hr class="primary">
+            </div>
+            <div class="col-lg-1 col-lg-offset-5 text-center">
+                <a href="https://www.linkedin.com/pub/connor-garrison/9/926/bbb" target="_blank"><i class="fa fa-linkedin fa-3x"></i></a>
+            </div>
+            <div class="col-lg-1 text-center">
+                <a href="https://www.github.com/garriscp" target="_blank"><i class="fa fa-github fa-3x"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
