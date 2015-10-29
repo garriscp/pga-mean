@@ -39,6 +39,8 @@
             <th>Eagles</th>
             <th>Trash Birdies</th>
             <th>Doubles or worse</th>
+            <th>Heaters</th>
+            <th>Bogey Trains</th>
             <th>RD 1</th>
             <th>RD 2</th>
             <th>RD 3</th>
@@ -54,12 +56,16 @@
             <td>{{player.eagles}}</td>
             <td>{{player.trashBirdies}}</td>
             <td>{{player.others}}</td>
+            <td>{{player.heaters}}</td>
+            <td>{{player.trains}}</td>
             <td ng-repeat="round in player.rnds" ng-class="{lowround: round.lowRound}">
                 <div>Score: {{round.score}}</div>
                 <div>Eagles: {{round.eagles}}</div>
                 <div>Trash Birdies: {{round.trashBirdies}}</div>
                 <div>Doubles or worse: {{round.others}}</div>
                 <div>Holes Played: {{round.holesPlayed}}</div>
+                <div>Heaters: {{round.heaters}}</div>
+                <div>Trains: {{round.trains}}</div>
             </td>
         </tr>
         </tbody>

@@ -52,7 +52,9 @@ exports.render = function(req, res) {
             "eagles": 0,
             "tross": 0,
             "rnds": [],
-            "others": []
+            "others": [],
+            "heaters": [],
+            "trains": []
         };
         for (var i = 0; i < rounds; i++) {
             data.rnds.push({
@@ -62,6 +64,8 @@ exports.render = function(req, res) {
                 "score": 0,
                 "lowRound": false,
                 "others": [],
+                "heaters": [],
+                "trains": [],
                 "holesPlayed": 0
             })
         }
@@ -191,6 +195,12 @@ exports.render = function(req, res) {
                                 break;
                             }
                         }
+                        //lets organize a little - go to a new function to calculate heaters and trains
+                        data.rnds[i].heaters = getHeatersFromRound(scorecard.p.rnds[i]);
+                        data.heaters.push(data.rnds[i].heaters);
+
+                        data.rnds[i].trains = getTrainsFromRound(scorecard.p.rnds[i]);
+                        data.trains.push(data.rnds[i].trains);
                     }
                     deferred.resolve(data);
                 });
@@ -199,6 +209,120 @@ exports.render = function(req, res) {
             }
         });
         return deferred.promise;
+    }
+
+    function getHeatersFromRound(round) {
+
+        var heaters = [];
+        var potentialHeaterActive = false;
+        var potentialHeaterStart = 0;
+        var potentialHeaterCars = 0;
+        var potentialHeater = [];
+
+        var prevHoleRunningScore = 0;
+
+        for (var n = 0; n < round.holes.length; n++) {
+
+            //first lets calculate previous hole running score, to handle case when its the first hole
+            if (round.holes[n].n == "1") {
+                prevHoleRunningScore = 0;
+            } else {
+                prevHoleRunningScore = Number((round.holes[n-1].pDay));
+            }
+
+            //is your current hole score at least one less than the hole before?
+            if (Number(round.holes[n].pDay) - prevHoleRunningScore <= -1) {
+                if (!potentialHeaterActive) {
+                    potentialHeaterActive = true;
+                    potentialHeaterStart = round.holes[n].n;
+                }
+                potentialHeaterCars++;
+            } else {
+                //ok no more birdies - did we have a heater?
+                if (potentialHeaterCars >= 3) {
+                    for (var i = 0; i < potentialHeaterCars; i++) {
+                        //add each hole of your heater to an array
+                        potentialHeater.push(Number(potentialHeaterStart) + i);
+                    }
+                    //add that individual heater array of holes into the big array of heaters
+                    heaters.push(potentialHeater);
+                }
+                //reset the heater vars - we'll start from scratch on the next hole
+                potentialHeaterActive = false;
+                potentialHeaterStart = 0;
+                potentialHeaterCars = 0;
+                potentialHeater = [];
+            }
+        }
+
+        //if we ended on a heater, make sure we add it
+        if (potentialHeaterCars >= 3) {
+            for (var m = 0; m < potentialHeaterCars; m++) {
+                //add each hole of your heater to an array
+                potentialHeater.push(Number(potentialHeaterStart) + m);
+            }
+            //add that individual heater array of holes into the big array of heaters
+            heaters.push(potentialHeater);
+        }
+
+        return heaters;
+    }
+
+    function getTrainsFromRound(round) {
+
+        var trains = [];
+        var potentialTrainActive = false;
+        var potentialTrainStart = 0;
+        var potentialTrainCars = 0;
+        var potentialTrain = [];
+
+        var prevHoleRunningScore = 0;
+
+        for (var n = 0; n < round.holes.length; n++) {
+
+            //first lets calculate previous hole running score, to handle case when its the first hole
+            if (round.holes[n].n == "1") {
+                prevHoleRunningScore = 0;
+            } else {
+                prevHoleRunningScore = Number((round.holes[n-1].pDay));
+            }
+
+            //is your current hole score at least one more than the hole before - you bogeyed?
+            if (Number(round.holes[n].pDay) - prevHoleRunningScore >= 1) {
+                if (!potentialTrainActive) {
+                    potentialTrainActive = true;
+                    potentialTrainStart = round.holes[n].n;
+                }
+                potentialTrainCars++;
+            } else {
+                //ok no more birdies - did we have a heater?
+                if (potentialTrainCars >= 3) {
+                    for (var i = 0; i < potentialTrainCars; i++) {
+                        //add each hole of your heater to an array
+                        potentialTrain.push(Number(potentialTrainStart) + i);
+                    }
+                    //add that individual heater array of holes into the big array of heaters
+                    trains.push(potentialTrain);
+                }
+                //reset the heater vars - we'll start from scratch on the next hole
+                potentialTrainActive = false;
+                potentialTrainStart = 0;
+                potentialTrainCars = 0;
+                potentialTrain = [];
+            }
+        }
+
+        //if we ended on a heater, make sure we add it
+        if (potentialTrainCars >= 3) {
+            for (var m = 0; m < potentialTrainCars; m++) {
+                //add each hole of your heater to an array
+                potentialTrain.push(Number(potentialTrainStart) + m);
+            }
+            //add that individual heater array of holes into the big array of heaters
+            trains.push(potentialTrain);
+        }
+
+        return trains;
     }
 
     function getNameFromId(id) {
