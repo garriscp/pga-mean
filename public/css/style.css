@@ -16,6 +16,7 @@
     width: 100%;
     height: 100%;
     text-align: center;
+    z-index: 10000;
 }
 
 .pga-mean-container .center-helper {
@@ -65,4 +66,86 @@
     color: #f05f40;
     font-size: 36px;
     padding-top: 20px;
+}
+
+.pga-mean-container .brand-primary {
+    color: #f05f40;
+}
+
+/* leaderboard styles */
+.pga-mean-container .team-leaderboard {
+    font-size: 10px;
+}
+
+.pga-mean-container .col-xs-2 {
+    text-align: center;
+}
+
+.pga-mean-container .team-leaderboard-row {
+    border-bottom: 1px solid #bbbbbb;
+    cursor: pointer;
+}
+.pga-mean-container .team-leaderboard-row:hover {
+    background: #efefef;
+}
+
+.pga-mean-container .team-leaderboard-row > div {
+    border-right: 1px solid #bbbbbb;
+}
+
+.pga-mean-container .team-leaderboard .data {
+    height: 35px;
+    line-height: 35px;
+}
+
+.pga-mean-container .team-leaderboard-labels {
+    background: #dddddd;
+    border: 1px solid #bbbbbb;
+}
+
+.pga-mean-container .team-leaderboard-labels > div {
+    border-right: 1px solid #bbbbbb;
+    height: 30px;
+    line-height: 35px;
+}
+
+.pga-mean-container .team-name {
+    padding: 10px;
+    font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+    color: #f05f40;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.pga-mean-container .team {
+    padding-bottom: 40px;
+}
+
+.pga-mean-container .team-leaderboard-row .expand-panel {
+    height: 0;
+    overflow: hidden;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.pga-mean-container .team-leaderboard-row.active .expand-panel {
+    height: 300px;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.pga-mean-container .team-leaderboard-row .expand-panel > div {
+    height: 30px;
+    line-height: 30px;
+}
+
+.pga-mean-container .round-table {
+    padding: 10px;
+    font-size: 8px;
+}
+
+.pga-mean-container .round div:first-child {
+    border-left: 1px solid #bbbbbb;
 }

@@ -89,6 +89,10 @@ module.exports = function(app) {
 
         .delete(tournament.deleteTournament);
 
+    app.route('/tournaments/:tournament_id')
+
+        .get(tournament.renderOne);
+
     app.get('/admin', function(req,res){
         res.sendfile('public/admin.html');
     });
@@ -97,7 +101,7 @@ module.exports = function(app) {
 
         //.get(wipe.render);
 
-    app.get('/tournaments/:tournament_id', function(req,res){
+    app.get('/tournament/:tournament_id', function(req,res){
         res.sendfile('public/index.html');
     });
 

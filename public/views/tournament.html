@@ -1,4 +1,4 @@
-<nav id="mainNav" class="navbar navbar-default navbar-fixed-top solid-bg">
+<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -17,6 +17,9 @@
                 <li class="separator-right">
                     <a class="page-scroll" ui-sref="home">Home</a>
                 </li>
+                <li class="separator-right">
+                    <a href="/admin" target="_self">Admin</a>
+                </li>
                 <li ng-repeat="tournament in tournaments">
                     <a ui-sref="tournament({tournament_id: '{{tournament.tournamentCode}}'})">{{tournament.name}}</a>
                 </li>
@@ -27,93 +30,75 @@
     <!-- /.container-fluid -->
 </nav>
 
-<div class="tournament-container">
-    <table class="table table-bordered table-condensed" ng-repeat="team in teams">
-        <caption>Team {{team.name}}</caption>
-        <thead>
-        <tr>
-            <th>Golfer</th>
-            <th style="display: none;">Money</th>
-            <th>Position</th>
-            <th>Score</th>
-            <th>Eagles</th>
-            <th>Trash Birdies</th>
-            <th>Doubles or worse</th>
-            <th>Heaters</th>
-            <th>Bogey Trains</th>
-            <th>RD 1</th>
-            <th>RD 2</th>
-            <th>RD 3</th>
-            <th>RD 4</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="player in team.players">
-            <td>{{player.name}}</td>
-            <td style="display: none;">{{player.money}}</td>
-            <td>{{player.position}}</td>
-            <td>{{player.finalScore}}</td>
-            <td>{{player.eagles}}</td>
-            <td>{{player.trashBirdies}}</td>
-            <td>{{player.others}}</td>
-            <td>{{player.heaters}}</td>
-            <td>{{player.trains}}</td>
-            <td ng-repeat="round in player.rnds" ng-class="{lowround: round.lowRound}">
-                <div>Score: {{round.score}}</div>
-                <div>Eagles: {{round.eagles}}</div>
-                <div>Trash Birdies: {{round.trashBirdies}}</div>
-                <div>Doubles or worse: {{round.others}}</div>
-                <div>Holes Played: {{round.holesPlayed}}</div>
-                <div>Heaters: {{round.heaters}}</div>
-                <div>Trains: {{round.trains}}</div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<header>
+    <div class="header-shim">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>{{tournament.name}}</h1>
+                <hr>
+                <p>Trash Holes <span class="brand-primary">{{tournament.trashHoles}}</span></p>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <table class="table table-bordered table-condensed" ng-repeat="flight in sortedFlights">
-        <caption ng-class="{'anti': $last}">Flight {{$index}}</caption>
-        <thead>
-        <tr>
-            <th>User</th>
-            <th>Golfer</th>
-            <th>Money</th>
-            <th>Position</th>
-            <th>Score</th>
-            <th>RD 1</th>
-            <th>RD 2</th>
-            <th>RD 3</th>
-            <th>RD 4</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="player in flight">
-            <td>{{player.userId}}</td>
-            <td>{{player.name}}</td>
-            <td>{{player.money}}</td>
-            <td>{{player.position}}</td>
-            <td>{{player.finalScore}}</td>
-            <td ng-repeat="round in player.rnds">{{round.score}}</td>
-        </tr>
-        </tbody>
-    </table>
-    <!--<table class="table table-bordered table-condensed">
-    <caption>Final Tally</caption>
-    <thead>
-    <tr>
-    <th>Pay Event</th>
-    <th users="true"></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-    <td>Final Score + Trash</td>
-    <td players="true"></td>
-    </tr>
-    <tr>
-    <td>Payout from flights</td>
-    <td flights="true"></td>
-    </tr>
-    </tbody>
-    </table>-->
-</div>
+
+<section class="leaderboard">
+    <div class="team" ng-repeat="team in teams">
+        <div class="team-name">{{team.name}}</div>
+        <div class="team-leaderboard">
+            <div class="team-leaderboard-labels">
+                <div class="col-xs-4">Player</div>
+                <div class="col-xs-2">POS</div>
+                <div class="col-xs-2">Score</div>
+                <div class="col-xs-2">Eagles</div>
+                <div class="col-xs-2">Trash</div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="team-leaderboard-data">
+                <div ng-repeat="player in team.players" class="team-leaderboard-row" ng-click="toggleActive(player)" ng-class="{active : isSelected(player)}">
+                    <div class="col-xs-4 data">{{player.name}}</div>
+                    <div class="col-xs-2 data">{{player.position}}</div>
+                    <div class="col-xs-2 data">{{player.finalScore}}</div>
+                    <div class="col-xs-2 data">{{player.eagles}}</div>
+                    <div class="col-xs-2 data">{{player.trashBirdies}}</div>
+                    <div class="expand-panel">
+                        <div>
+                            <div class="col-xs-4">Doubles or Worse</div>
+                            <div class="col-xs-8">{{player.others}}</div>
+                        </div>
+                        <div>
+                            <div class="col-xs-4">Heaters</div>
+                            <div class="col-xs-8">{{player.heaters}}</div>
+                        </div>
+                        <div>
+                            <div class="col-xs-4">Bogey Trains</div>
+                            <div class="col-xs-8">{{player.trains}}</div>
+                        </div>
+                        <div class="round-table">
+                            <div class="team-leaderboard-labels">
+                                <div class="col-xs-2">Round</div>
+                                <div class="col-xs-2">Score</div>
+                                <div class="col-xs-2">Thru</div>
+                                <div class="col-xs-2">Eagles</div>
+                                <div class="col-xs-2">Trash</div>
+                                <div class="col-xs-2">Cheers</div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="round team-leaderboard-row" ng-repeat="round in player.rnds">
+                                <div class="col-xs-2">{{getDayFromRound($index)}}</div>
+                                <div class="col-xs-2">{{round.score}}</div>
+                                <div class="col-xs-2">{{round.holesPlayed}}</div>
+                                <div class="col-xs-2">{{round.eagles}}</div>
+                                <div class="col-xs-2">{{round.trashBirdies}}</div>
+                                <div class="col-xs-2">{{round.others}}</div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

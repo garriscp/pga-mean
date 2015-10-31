@@ -14,7 +14,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "/views/home.html"
         })
         .state('tournament', {
-            url: "/tournaments/:tournament_id",
+            url: "/tournament/:tournament_id",
             templateUrl: "/views/tournament.html",
             controller: "tournamentController"
         })
@@ -27,7 +27,10 @@ app.factory('mainFactory', ["$http", function($http){
             return $http.get('/team/' + tournament_id);
         },
         getFlightData: function(tournament_id) {
-            return $http.get('/flight/' + tournament_id)
+            return $http.get('/flight/' + tournament_id);
+        },
+        getTournament: function(tournament_id) {
+            return $http.get('/tournaments/' + tournament_id);
         },
         getNames: function() {
             return $http.get('/users');
@@ -55,9 +58,15 @@ app.controller('tournamentController', function($scope,mainFactory,$location,$q,
     $scope.teams = [];
     $scope.sortedFlights = [];
     $scope.namesData = [];
+    $scope.tournament = {};
+
+    $scope.selected = {};
 
     var getTeams = mainFactory.getTeams(tournament_id);
     var getFlights = mainFactory.getFlightData(tournament_id);
+    var getTournamentData = mainFactory.getTournament(tournament_id).then(function(tournament){
+        $scope.tournament = tournament.data;
+    });
 
     showLoading();
 
@@ -82,6 +91,20 @@ app.controller('tournamentController', function($scope,mainFactory,$location,$q,
     function hideLoading() {
         $(".loading").hide();
     }
+
+    $scope.toggleActive = function(player) {
+        $scope.selected = ($scope.selected === player) ? {} : player;
+    };
+
+    $scope.isSelected = function(player) {
+        return $scope.selected === player;
+    };
+
+    $scope.getDayFromRound = function(round) {
+        var days = ["THU","FRI","SAT","SUN"];
+        return (round > 3) ? "XTRA" : days[round];
+    }
+
 });
 
 app.directive("players", function() {

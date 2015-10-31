@@ -11,6 +11,19 @@ exports.render = function(req, res) {
 
 };
 
+exports.renderOne = function(req, res) {
+
+    var Tournament = require('../models/tournament.js');
+    Tournament.findOne({"tournamentCode":req.params.tournament_id}, function(err, tournament) {
+        if (err){
+            res.send(err);
+        } else {
+            res.json(tournament);
+        }
+    });
+
+};
+
 
 exports.create = function(req, res) {
     var Tournament = require('../models/tournament.js');
