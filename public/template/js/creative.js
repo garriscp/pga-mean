@@ -22,18 +22,14 @@
         offset: 51
     })
 
+    alert("here");
+
     // Closes the Responsive Menu on Menu Item Click
     $('.navbar-collapse ul li a').click(function() {
+        alert("1");
         $('.navbar-toggle:visible').click();
+        alert("2");
     });
-
-    // Fit Text Plugin for Main Header
-    $("h1").fitText(
-        1.2, {
-            minFontSize: '35px',
-            maxFontSize: '65px'
-        }
-    );
 
     // Offset for Main Navigation
     $('#mainNav').affix({

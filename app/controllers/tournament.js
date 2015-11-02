@@ -51,3 +51,18 @@ exports.deleteTournament = function(req, res) {
         }
     });
 };
+
+exports.renderMostRecent = function(req, res) {
+
+    var Tournament = require('../models/tournament.js');
+    var mostRecent = Tournament.find().sort({_id:-1}).limit(1);
+
+    mostRecent.exec(function(err, tournament) {
+        if (err){
+            res.send(err);
+        } else {
+            res.json(tournament);
+        }
+    });
+
+};

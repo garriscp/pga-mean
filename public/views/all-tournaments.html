@@ -1,0 +1,11 @@
+<header>
+    <div class="header-shim">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>All Tournaments</h1>
+                <hr>
+                <a ng-repeat="tournament in tournaments" ui-sref="tournament({tournament_id: '{{tournament.tournamentCode}}'})"><p><span class="brand-primary">{{tournament.name}}</span></p></a>
+            </div>
+        </div>
+    </div>
+</header>

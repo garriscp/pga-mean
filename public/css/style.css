@@ -73,6 +73,11 @@
 }
 
 /* leaderboard styles */
+
+.pga-mean-container .leaderboard {
+    background-color: white;
+}
+
 .pga-mean-container .team-leaderboard {
     font-size: 10px;
 }

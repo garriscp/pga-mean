@@ -89,6 +89,10 @@ module.exports = function(app) {
 
         .delete(tournament.deleteTournament);
 
+    app.route('/tournaments/mostRecent')
+
+        .get(tournament.renderMostRecent);
+
     app.route('/tournaments/:tournament_id')
 
         .get(tournament.renderOne);
@@ -106,6 +110,10 @@ module.exports = function(app) {
     });
 
     app.get('/', function(req,res){
+        res.sendfile('public/index.html');
+    });
+
+    app.get('/all-tournaments/', function(req,res){
         res.sendfile('public/index.html');
     });
 };

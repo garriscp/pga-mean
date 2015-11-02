@@ -18,6 +18,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "/views/tournament.html",
             controller: "tournamentController"
         })
+        .state('all-tournaments', {
+            url: "/all-tournaments",
+            templateUrl: "/views/all-tournaments.html"
+        })
 });
 
 app.factory('mainFactory', ["$http", function($http){
@@ -37,6 +41,9 @@ app.factory('mainFactory', ["$http", function($http){
         },
         getTournaments: function() {
             return $http.get('/tournaments');
+        },
+        getMostRecentTournament: function() {
+            return $http.get('/tournaments/mostRecent')
         }
     }
 
@@ -46,7 +53,15 @@ app.controller('mainController', function($stateParams, $scope, mainFactory) {
     var tournament_id = $stateParams.tournament_id;
     mainFactory.getTournaments(tournament_id).then(function(tournaments){
         $scope.tournaments = tournaments.data;
-    })
+    });
+    mainFactory.getMostRecentTournament(tournament_id).then(function(tournament){
+        $scope.mostRecent = tournament.data;
+    });
+
+    $scope.closeMenu = function() {
+        $('.navbar-toggle:visible').click();
+    };
+
 });
 
 app.controller('tournamentController', function($scope,mainFactory,$location,$q,$stateParams, $state) {
@@ -64,7 +79,7 @@ app.controller('tournamentController', function($scope,mainFactory,$location,$q,
 
     var getTeams = mainFactory.getTeams(tournament_id);
     var getFlights = mainFactory.getFlightData(tournament_id);
-    var getTournamentData = mainFactory.getTournament(tournament_id).then(function(tournament){
+    mainFactory.getTournament(tournament_id).then(function(tournament){
         $scope.tournament = tournament.data;
     });
 
