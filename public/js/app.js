@@ -118,6 +118,10 @@ app.controller('tournamentController', function($scope,mainFactory,$location,$q,
     $scope.getDayFromRound = function(round) {
         var days = ["THU","FRI","SAT","SUN"];
         return (round > 3) ? "XTRA" : days[round];
+    };
+
+    $scope.truncateName = function(name) {
+        return name.substring(0,name.indexOf(","));
     }
 
 });

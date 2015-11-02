@@ -25,7 +25,7 @@
             </div>
             <div class="team-leaderboard-data">
                 <div ng-repeat="player in team.players" class="team-leaderboard-row" ng-click="toggleActive(player)" ng-class="{active : isSelected(player)}">
-                    <div class="col-xs-4 data">{{player.name}}</div>
+                    <div class="col-xs-4 data">{{truncateName(player.name)}}</div>
                     <div class="col-xs-2 data">{{player.position}}</div>
                     <div class="col-xs-2 data">{{player.finalScore}}</div>
                     <div class="col-xs-2 data">{{player.eagles}}</div>
