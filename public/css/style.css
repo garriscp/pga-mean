@@ -154,3 +154,16 @@
 .pga-mean-container .round div:first-child {
     border-left: 1px solid #bbbbbb;
 }
+
+@media(min-width:768px) {
+    .pga-mean-container .team-leaderboard .data {
+        line-height: 40px;
+        height: 40px;
+    }
+    .pga-mean-container .team-leaderboard {
+        font-size: 16px;
+    }
+    .pga-mean-container .round-table {
+        font-size: 12px;
+    }
+}
