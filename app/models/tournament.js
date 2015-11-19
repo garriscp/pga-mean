@@ -8,11 +8,13 @@ var TournamentSchema   = new Schema({
     flightPayouts: Array,
     parOrWorsePayouts: Array,
     parOrWorsePayoutsAnti: Array,
+    heaterPayouts: Array,
     tournamentCode: String,
     teams: [
         { user_id: String, players: Array }
     ],
-    name: String
+    name: String,
+    lowRoundPrice: Number
 });
 
 module.exports = mongoose.model('Tournament', TournamentSchema);

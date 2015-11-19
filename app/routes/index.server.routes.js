@@ -1,6 +1,5 @@
 module.exports = function(app) {
     var team = require('../controllers/team');
-    var flight = require('../controllers/flight');
     var field = require('../controllers/field');
     var wipe = require('../controllers/wipe');
     var tournament = require('../controllers/tournament');
@@ -68,10 +67,6 @@ module.exports = function(app) {
     app.route('/team/:tournament_id')
 
         .get(team.render);
-
-    app.route('/flight/:tournament_id')
-
-        .get(flight.render);
 
     app.route('/build/:tournament_id')
 

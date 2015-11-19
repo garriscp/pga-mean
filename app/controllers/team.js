@@ -4,6 +4,8 @@ exports.render = function(req, res) {
     var User = require('../models/user.js');
     var Tournament = require('../models/tournament.js');
 
+    var _und = require("../../node_modules/underscore/underscore-min");
+
     var Q = require("q"),
         util = require("util"),
         request = require("request");
@@ -54,7 +56,8 @@ exports.render = function(req, res) {
             "rnds": [],
             "others": [],
             "heaters": [],
-            "trains": []
+            "trains": [],
+            "lowRoundCount": 0
         };
         for (var i = 0; i < rounds; i++) {
             data.rnds.push({
@@ -95,6 +98,8 @@ exports.render = function(req, res) {
                 for (var c = 0; c < groupsAndScores[a].players[b].rnds.length; c++) {
                     if (lowScoresPerRound[c] == Number(groupsAndScores[a].players[b].rnds[c].score)) {
                         groupsAndScores[a].players[b].rnds[c].lowRound = true;
+                        //set this round in the user low rounds array to true if at least one of your players achieved low round
+                        groupsAndScores[a].lowRounds[c] = true;
                     }
                 }
             }
@@ -342,6 +347,8 @@ exports.render = function(req, res) {
         var money = 0;
         money += player.eagles * tournamentJSON.eaglePrice;
         money += player.trashBirdies * tournamentJSON.trashPrice;
+        money += getHeaterMoney(player.heaters);
+        money += getTrainMoney(player.trains);
         if (isAnti) {
             //if anti, start with just do the opposite for eagles, trash birdies, and final score
             money *= -1;
@@ -353,7 +360,35 @@ exports.render = function(req, res) {
                 money += tournamentJSON.parOrWorsePayouts[player.others[j]];
             }
         }
-        money += getFinalScoreMoney(player.position,isAnti);
+        //money += getFinalScoreMoney(player.position,isAnti);
+
+
+        return money;
+    }
+
+    function getHeaterMoney(heaters) {
+        var money = 0;
+        //loop through days of heaters
+        for (var i = 0; i < heaters.length; i++) {
+            //loop through heaters for each day
+            for (var j = 0; j < heaters[i].length; j++) {
+                money += tournamentJSON.heaterPayouts[heaters[i][j].length];
+            }
+        }
+
+        return money;
+    }
+
+    function getTrainMoney(trains) {
+        var money = 0;
+        //loop through days of heaters
+        for (var i = 0; i < trains.length; i++) {
+            //loop through heaters for each day
+            for (var j = 0; j < trains[i].length; j++) {
+                money += (tournamentJSON.heaterPayouts[trains[i][j].length] * -1);
+            }
+        }
+
         return money;
     }
 
@@ -387,15 +422,154 @@ exports.render = function(req, res) {
         for (var i = 0; i < data.length; i++) {
             if (!util.isArray(data[i])) {
                 data[i-1].userName = data[i].name;
+                //add names, default value for money, and players
                 newData.push({
                     "name": data[i].name,
-                    "players": data[i-1]
+                    "money": 0,
+                    "lowRounds": [false,false,false,false],
+                    "players": data[i-1],
+                    "userId": data[i].id
                 })
             }
         }
 
         return newData;
     }
+
+    function addMoneyToUsers(teams) {
+        var totalMoney = 0;
+        for (var i = 0; i < teams.length; i++) {
+            //and players
+            for (var j = 0; j < teams[i].players.length; j++) {
+                teams[i].money += teams[i].players[j].money;
+            }
+            teams[i].money *= (teams.length - 1);
+            totalMoney += teams[i].money;
+        }
+        for (var k = 0; k < teams.length; k++) {
+            teams[k].money -= (totalMoney / (teams.length));
+            //console.log((teams.length));
+        }
+        return teams;
+    }
+
+    function addLowRoundMoney(teams) {
+
+        var lowRoundCount = [0,0,0,0];
+        for (var i = 0; i < teams.length; i++) {
+            //and low round array
+            for (var j = 0; j < teams[i].lowRounds.length; j++) {
+                if (teams[i].lowRounds[j]) {
+                    //if you got low round for this round, add one to the total low round count across players
+                    lowRoundCount[j]++;
+                }
+            }
+        }
+        for (var n = 0; n < teams.length; n++) {
+            //and low round array
+            for (var m = 0; m < teams[n].lowRounds.length; m++) {
+                if (teams[n].lowRounds[m]) {
+                    //if you got low round, we'll get the total low round payout and divide it by the number of teams
+                    //if you didn't, we'll subtract the individual low round payout from the tournamentJSON
+                    //total low round payout would be 15 bucks if there are 4 teams (5 from each player to a single winner in the most common scenario)
+                    //first get number of teams that are paying (total teams minus teams splitting the pot) then multiply by low round price for total pot
+                    //then divide pot by total number of winners
+                    //if two tied for example, there would be 10 bucks available and then each winner would get 5
+                    teams[n].money += ((teams.length - lowRoundCount[m]) * tournamentJSON.lowRoundPrice) / lowRoundCount[m];
+                } else {
+                    teams[n].money -= tournamentJSON.lowRoundPrice;
+                }
+            }
+        }
+
+        return teams;
+    }
+
+    function addFlightMoney(teams) {
+        var sortedFlights = [];
+        var flights = getFlightsFromTeams(teams);
+
+        for (var i = 0; i < flights.length; i++) {
+            if (i !== flights.length -1) {
+                sortedFlights[i] = _und.sortBy( flights[i], "numericPosition");
+            } else {
+                //reverse order if we are the last group - assuming antis
+                sortedFlights[i] = _und.sortBy( flights[i], "numericPosition").reverse();
+            }
+
+            for (var a = 0; a < sortedFlights[i].length; a++) {
+                sortedFlights[i][a].money = tournamentJSON.flightPayouts[a];
+                //console.log("user " + sortedFlights[i][a].userId + "   should get " + tournamentJSON.flightPayouts[a]);
+            }
+
+            sortedFlights[i] = adjustForTies(_und.groupBy(sortedFlights[i],"numericPosition"));
+
+            for (var b = 0; b < sortedFlights[i].length; b++) {
+
+                //we need to loop through original teams array to add the money now
+                for (var n = 0; n < teams.length; n++) {
+                    if (teams[n].userId === sortedFlights[i][b].userId) {
+                        teams[n].money += sortedFlights[i][b].money;
+                        console.log("to user " + teams[n].name + " adding " + sortedFlights[i][b].money);
+                    }
+                }
+
+            }
+
+        }
+
+        return teams;
+
+    }
+
+
+
+
+    /* flight stuff */
+
+    function getFlightsFromTeams(teams) {
+        var flights = [];
+        //assume everyone has the same amount of players
+        for (var i = 0; i < teams[0].players.length; i++) {
+            flights[i] = [];
+        }
+        for (var j = 0; j < flights.length; j++) {
+            for (var n = 0; n < teams.length; n++) {
+                flights[j].push(teams[n].players[j])
+            }
+        }
+        return flights;
+    }
+
+    function adjustForTies(sortedFlights) {
+        _und.each(sortedFlights,function(flight){
+            var totalMoney = 0;
+            _und.each(flight,function(playerPair){
+                totalMoney += Number(playerPair.money);
+            });
+            _und.each(flight,function(playerPair){
+                playerPair.money = (totalMoney / flight.length);
+            });
+        });
+        return _und.sortBy(_und.flatten(_und.values(sortedFlights)), "numericPosition");
+    }
+
+    function getNumericPosition(position,score) {
+        var numericPosition = 0;
+        score = Number(score);
+        //if CUT - give position of 9999 + final score so that we rank correctly
+        //assuming one cut per tournament
+        if (position === "CUT") {
+            numericPosition = 1000 + score;
+        } else {
+            //remove T if there for tie, then turn into number
+            numericPosition = Number(position.replace("T",""));
+        }
+        return numericPosition;
+    }
+
+
+    /* end flight stuff */
 
     getTournamentFromId(req.params.tournament_id).then(function(tournament){
         //set tournamentJSON globally so everyone can access
@@ -412,18 +586,28 @@ exports.render = function(req, res) {
             for (var i = 0; i < groupsAndScores.length; i++) {
                 //and players
                 for (var j = 0; j < groupsAndScores[i].players.length; j++) {
+                    //add team ID to each user to keep track later
+                    groupsAndScores[i].players[j].userId = tournamentJSON.teams[i].user_id;
+
                     //check against players in leaderboard
+
                     for (var k = 0; k < leaderboard[0].leaderboard.players.length; k++) {
                         if (groupsAndScores[i].players[j].id == leaderboard[0].leaderboard.players[k].player_id) {
                             groupsAndScores[i].players[j].position = leaderboard[0].leaderboard.players[k].current_position ? leaderboard[0].leaderboard.players[k].current_position : "CUT";
                             //get the current score from the leaderboard json - we should rename from final score to current
                             groupsAndScores[i].players[j].finalScore = leaderboard[0].leaderboard.players[k].total;
+                            groupsAndScores[i].players[j].numericPosition = getNumericPosition(groupsAndScores[i].players[j].position,groupsAndScores[i].players[j].finalScore);
                         }
                     }
-                    var isAnti = (j == groupsAndScores[i].length - 1);
+                    var isAnti = (j == groupsAndScores[i].players.length - 1);
                     groupsAndScores[i].players[j].money = getMoneyEarned(groupsAndScores[i].players[j],isAnti);
                 }
+
+
             }
+            groupsAndScores = addMoneyToUsers(groupsAndScores);
+            //groupsAndScores = addLowRoundMoney(groupsAndScores);
+            //groupsAndScores = addFlightMoney(groupsAndScores);
             res.json(groupsAndScores);
 
         }, function(rejection){

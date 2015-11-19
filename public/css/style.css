@@ -8,10 +8,6 @@
 }
 
 .pga-mean-container .loading {
-    display: none;
-}
-
-.pga-mean-container .loading {
     position: absolute;
     width: 100%;
     height: 100%;
