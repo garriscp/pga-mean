@@ -6,7 +6,7 @@ exports.render = function(req,res) {
 
     function updatePlayers() {
         var promises = [];
-        return urlPromise("http://www.pgatour.com/data/r/" + req.params.tournament_id + "/2015/field.json");
+        return urlPromise("http://www.pgatour.com/data/r/" + req.params.tournament_id + "/2016/field.json");
     }
 
     function updatePlayer(newPlayer) {
