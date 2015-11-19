@@ -14,8 +14,8 @@
 </head>
 
 <body ng-controller="adminController" class="pga-mean-container container-fluid">
-    <div class="loading">
-        <span class="center-helper"></span><img src="img/loading.gif" height="150" />
+    <div class="loading" ng-show="loading">
+        <span class="center-helper"></span><img src="/img/loading.gif" height="150" />
     </div>
     <h1>New Tournament</h1>
     <form ng-submit="buildField()">
