@@ -36,7 +36,7 @@
 
 <body ng-controller="mainController" class="pga-mean-container page-top">
     <div class="loading" ng-show="loading">
-        <span class="center-helper"></span><img src="/img/loading.gif" height="150" />
+        <span class="center-helper"></span><img src="/img/loading.gif" height="64" />
     </div>
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -56,9 +56,6 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="separator-right">
                         <a class="page-scroll" ui-sref="home" ng-click="closeMenu()">Home</a>
-                    </li>
-                    <li class="separator-right">
-                        <a href="/admin" target="_self" ng-click="closeMenu()">Admin</a>
                     </li>
                     <li ng-repeat="tournament in mostRecent">
                         <a ui-sref="tournament({tournament_id: '{{tournament.tournamentCode}}'})" ng-click="closeMenu()">{{tournament.name}}</a>
