@@ -5,7 +5,7 @@ var app = angular.module('pgaMean', ['ui.router'],function($locationProvider){
     });
 });
 
-app.config(function($stateProvider, $urlRouterProvider) {
+app.config(function($stateProvider) {
     //
     // Now set up the states
     $stateProvider
@@ -76,6 +76,20 @@ app.controller('tournamentController', function($scope,mainFactory,$location,$q,
 
     $scope.loading = false;
 
+    var expandSwitch = $("#expand-toggle");
+
+    expandSwitch.bootstrapToggle();
+
+    expandSwitch.change(function() {
+        if($(this).prop('checked')) {
+            $scope.expandAllPlayers();
+        } else {
+            $scope.collapseAllPlayers();
+        }
+    });
+
+
+
     var getTeams = mainFactory.getTeams(tournament_id);
     mainFactory.getTournament(tournament_id).then(function(tournament){
         $scope.tournament = tournament.data;
@@ -96,12 +110,12 @@ app.controller('tournamentController', function($scope,mainFactory,$location,$q,
         $scope.namesData = _.sortBy( data.data, "id");
     });
 
-    $scope.toggleActive = function(player) {
-        $scope.selected = ($scope.selected === player) ? {} : player;
+    $scope.toggleSelected = function(player) {
+        player.isSelected = !player.isSelected;
     };
 
     $scope.isSelected = function(player) {
-        return $scope.selected === player;
+        return player.isSelected;
     };
 
     $scope.getDayFromRound = function(round) {
@@ -111,6 +125,24 @@ app.controller('tournamentController', function($scope,mainFactory,$location,$q,
 
     $scope.truncateName = function(name) {
         return name.substring(0,name.indexOf(","));
-    }
+    };
+
+    $scope.expandAllPlayers = function() {
+        angular.forEach($scope.teams, function(team) {
+            angular.forEach(team.players, function(player) {
+                player.isSelected = true;
+            })
+        });
+        $scope.$apply();
+    };
+
+    $scope.collapseAllPlayers = function() {
+        angular.forEach($scope.teams, function(team) {
+            angular.forEach(team.players, function(player) {
+                player.isSelected = false;
+            })
+        });
+        $scope.$apply();
+    };
 
 });

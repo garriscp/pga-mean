@@ -12,6 +12,10 @@
 
 
 <section class="leaderboard">
+    <div class="toggle-container">
+        <input type="checkbox" data-toggle="toggle" data-on="Collapse All" data-off="Expand All" id="expand-toggle">
+    </div>
+
     <div class="team" ng-repeat="team in teams">
         <div class="team-name">{{team.name}}</div>
         <div class="team-leaderboard">
@@ -24,7 +28,7 @@
                 <div class="clearfix"></div>
             </div>
             <div class="team-leaderboard-data">
-                <div ng-repeat="player in team.players" class="team-leaderboard-row" ng-click="toggleActive(player)" ng-class="{active : isSelected(player)}">
+                <div ng-repeat="player in team.players" class="team-leaderboard-row" ng-click="toggleSelected(player)" ng-class="{active : player.isSelected}">
                     <div class="col-xs-4 data">{{truncateName(player.name)}}</div>
                     <div class="col-xs-2 data">{{player.position}}</div>
                     <div class="col-xs-2 data">{{player.finalScore}}</div>
