@@ -342,30 +342,6 @@ exports.render = function(req, res) {
         return Tournament.findOne({"tournamentCode":id}).exec();
     }
 
-    function getMoneyEarned(player,isAnti) {
-        //any final place trash?
-        var money = 0;
-        money += player.eagles * tournamentJSON.eaglePrice;
-        money += player.trashBirdies * tournamentJSON.trashPrice;
-        money += getHeaterMoney(player.heaters);
-        money += getTrainMoney(player.trains);
-        if (isAnti) {
-            //if anti, start with just do the opposite for eagles, trash birdies, and final score
-            money *= -1;
-            for (var i = 0; i < player.others.length; i++) {
-                money += tournamentJSON.parOrWorsePayoutsAnti[player.others[i]];
-            }
-        } else {
-            for (var j = 0; j < player.others.length; j++) {
-                money += tournamentJSON.parOrWorsePayouts[player.others[j]];
-            }
-        }
-        //money += getFinalScoreMoney(player.position,isAnti);
-
-
-        return money;
-    }
-
     function getHeaterMoney(heaters) {
         var money = 0;
         //loop through days of heaters
@@ -390,6 +366,53 @@ exports.render = function(req, res) {
         }
 
         return money;
+    }
+
+    function extractHeaterArrays(arr) {
+        var heaters = 0;
+        for (var i = 0; i < arr.length; i++) {
+            for (var j = 0; j < arr[i].length; j++) {
+                if (arr[i][j].length > 0) {
+                    //here we convert from heater arrays to value
+                    //a 3 car heater is a single heater, a 4 car heater is the same as 2 3 car heaters, etc.
+                    heaters += (arr[i][j].length - 2);
+                }
+            }
+        }
+        return heaters;
+    }
+
+    function extractOthers(arr, isAnti) {
+        var others = 0;
+        for (var i = 0; i < arr.length; i++) {
+            if (isAnti) {
+                if (arr[i] - 2 >= 0) {
+                    others -= (arr[i] - 2) + 1;
+                }
+            } else {
+                if (arr[i] - 3 >= 0) {
+                    others -= (arr[i] - 3) + 2;
+                }
+            }
+        }
+        return others;
+    }
+
+    function addFinalPlaceMoney(teams) {
+        var totalMoney = 0;
+        for (var i = 0; i < teams.length; i++) {
+            //and players
+            for (var j = 0; j < teams[i].players.length; j++) {
+                var isAnti = (i === teams[i].players.length - 1);
+                teams[i].tempMoney += getFinalScoreMoney(teams[i].players[j].position, isAnti);
+            }
+            totalMoney += teams[i].tempMoney;
+        }
+        for (var k = 0; k < teams.length; k++) {
+            teams[k].money += (teams[k].tempMoney * (teams.length - 1)) - (totalMoney - teams[k].tempMoney);
+            console.log(teams[k].money);
+        }
+        return teams;
     }
 
     function getFinalScoreMoney(position,isAnti) {
@@ -426,9 +449,16 @@ exports.render = function(req, res) {
                 newData.push({
                     "name": data[i].name,
                     "money": 0,
+                    "tempMoney": 0,
                     "lowRounds": [false,false,false,false],
                     "players": data[i-1],
-                    "userId": data[i].id
+                    "userId": data[i].id,
+                    "trashBirdies": 0,
+                    "eagles": 0,
+                    "tross": 0,
+                    "heaters": 0,
+                    "trains": 0,
+                    "others": 0
                 })
             }
         }
@@ -437,18 +467,46 @@ exports.render = function(req, res) {
     }
 
     function addMoneyToUsers(teams) {
-        var totalMoney = 0;
+        var totalBirdies = 0,
+            totalEagles = 0,
+            totalTross = 0,
+            totalHeaters = 0,
+            totalTrains = 0,
+            totalOthers = 0,
+            antiFactor = 1;
+        var isAnti = false;
         for (var i = 0; i < teams.length; i++) {
             //and players
             for (var j = 0; j < teams[i].players.length; j++) {
-                teams[i].money += teams[i].players[j].money;
+                if (j === teams[i].players.length - 1) {
+                    //if it's the last player, we are assuming anti
+                    antiFactor = -1;
+                    isAnti = true;
+                } else {
+                    antiFactor = 1;
+                    isAnti = false;
+                }
+                //teams[i].money += teams[i].players[j].money;
+                teams[i].trashBirdies += teams[i].players[j].trashBirdies * antiFactor;
+                teams[i].eagles += teams[i].players[j].eagles * antiFactor;
+                teams[i].tross += teams[i].players[j].tross * antiFactor;
+                teams[i].heaters += extractHeaterArrays(teams[i].players[j].heaters) * antiFactor;
+                teams[i].trains += extractHeaterArrays(teams[i].players[j].trains) * antiFactor;
+                teams[i].others += extractOthers(teams[i].players[j].others, isAnti) * antiFactor;
             }
-            teams[i].money *= (teams.length - 1);
-            totalMoney += teams[i].money;
+            totalBirdies += teams[i].trashBirdies;
+            totalEagles += teams[i].eagles;
+            totalTross += teams[i].tross;
+            totalHeaters += teams[i].heaters;
+            totalTrains += teams[i].trains;
+            totalOthers += teams[i].others;
         }
         for (var k = 0; k < teams.length; k++) {
-            teams[k].money -= (totalMoney / (teams.length));
-            //console.log((teams.length));
+            teams[k].money += (teams[k].trashBirdies * (teams.length - 1) * tournamentJSON.trashPrice) - ((totalBirdies - teams[k].trashBirdies) * tournamentJSON.trashPrice);
+            teams[k].money += (teams[k].eagles * (teams.length - 1) * tournamentJSON.eaglePrice) - ((totalEagles - teams[k].eagles) * tournamentJSON.eaglePrice);
+            teams[k].money += (teams[k].others * (teams.length - 1) * tournamentJSON.parOrWorsePayoutsAnti[2]) - ((totalOthers - teams[k].others) * tournamentJSON.parOrWorsePayoutsAnti[2]);
+            teams[k].money += (teams[k].heaters * (teams.length - 1) * tournamentJSON.heaterPayouts[3]) - ((totalHeaters - teams[k].heaters) * tournamentJSON.heaterPayouts[3]);
+            teams[k].money += (teams[k].trains * (teams.length - 1) * tournamentJSON.heaterPayouts[3] * -1) - ((totalTrains - teams[k].trains) * tournamentJSON.heaterPayouts[3] * -1);
         }
         return teams;
     }
@@ -600,12 +658,12 @@ exports.render = function(req, res) {
                         }
                     }
                     var isAnti = (j == groupsAndScores[i].players.length - 1);
-                    groupsAndScores[i].players[j].money = getMoneyEarned(groupsAndScores[i].players[j],isAnti);
                 }
 
 
             }
             groupsAndScores = addMoneyToUsers(groupsAndScores);
+            groupsAndScores = addFinalPlaceMoney(groupsAndScores);
             //groupsAndScores = addLowRoundMoney(groupsAndScores);
             //groupsAndScores = addFlightMoney(groupsAndScores);
             res.json(groupsAndScores);
