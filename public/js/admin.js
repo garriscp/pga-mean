@@ -36,6 +36,29 @@ app.controller('adminController', function($scope,mainFactory) {
         }
     ];
 
+    $scope.teamsFive = [
+        {
+            "user_id": "0",
+            "players": [""," "," "," "," "]
+        },
+        {
+            "user_id": "1",
+            "players": [" "," "," "," "," "]
+        },
+        {
+            "user_id": "2",
+            "players": [" "," "," "," "," "]
+        },
+        {
+            "user_id": "3",
+            "players": [" "," "," "," "," "]
+        },
+        {
+            "user_id": "4",
+            "players": [" "," "," "," "," "]
+        }
+    ];
+
     mainFactory.getAllPlayers().then(function(data){
         $scope.players = data.data;
     }, function(data){
@@ -78,10 +101,10 @@ app.controller('adminController', function($scope,mainFactory) {
         return true
     }
 
-    function checkTeamsForEmptyPlayers() {
+    function checkTeamsForEmptyPlayers(teams) {
         var emptyFlag = false;
-        for (var i = 0; i < $scope.teams.length; i++) {
-            if (checkNoEmpties($scope.teams[i].players)) {
+        for (var i = 0; i < teams.length; i++) {
+            if (checkNoEmpties(teams[i].players)) {
                 //nothing
             } else {
                 emptyFlag = true;
@@ -104,6 +127,33 @@ app.controller('adminController', function($scope,mainFactory) {
             "parOrWorsePayoutsAnti": [0,0,1,2,3,4,5,6,7,8,9,10],
             "tournamentCode": $scope.tournamentID,
             "teams": $scope.teams,
+            "heaterPayouts": [0,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+        };
+
+        if (checkTeamsForEmptyPlayers(tournamentJSON.teams)) {
+            alert("you have some empty players - please check");
+        } else {
+            mainFactory.createTournament(tournamentJSON).then(function(data){
+                $(".tournament-results").html("Tournament Successfully Added --> " + JSON.stringify(data.data));
+            },function(data){
+                $(".tournament-results").html("There was an error --> " + JSON.stringify(data.data));
+            })
+        }
+    };
+
+    $scope.createTournamentFive = function(){
+
+        var tournamentJSON = {
+            "name": $scope.tournamentName,
+            "eaglePrice": 2,
+            "trashHoles": $scope.getTrashHoles(),
+            "trashPrice": 1,
+            "lowRoundPrice": 5,
+            "flightPayouts": [15,5,0,-15],
+            "parOrWorsePayouts": [0,0,0,-2,-3,-4,-5,-6,-7,-8,-9,-10],
+            "parOrWorsePayoutsAnti": [0,0,1,2,3,4,5,6,7,8,9,10],
+            "tournamentCode": $scope.tournamentID,
+            "teams": $scope.teamsFive,
             "heaterPayouts": [0,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
         };
 

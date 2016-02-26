@@ -96,6 +96,10 @@ module.exports = function(app) {
         res.sendfile('public/admin.html');
     });
 
+    app.get('/admin-five', function(req,res){
+        res.sendfile('public/admin-five.html');
+    });
+
     //app.route('/wipe')
 
         //.get(wipe.render);
